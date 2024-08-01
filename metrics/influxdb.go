@@ -19,26 +19,22 @@ type InfluxDB struct {
 	database string
 }
 
-// InitializeClient created a new UDP based influx db client. The more secure way of doing would be to use http client
-// with batching to avoid lock-ups. For now, UDP client is easier to implement with the useful non-blocking property.
-// TODO: use HTTP client with batching instead of UDP.
+// InitializeClient creates a new HTTP based InfluxDB client. This client will be used for the lifetime of the application.
 func (flxDB *InfluxDB) InitializeClient(addr string, port int, database string) error {
 	var err error
-	flxDB.client, err = influxdb_client.NewUDPClient(influxdb_client.UDPConfig{
-		Addr:        fmt.Sprintf("%s:%d", addr, port),
-		PayloadSize: 512,
+	flxDB.client, err = influxdb_client.NewHTTPClient(influxdb_client.HTTPConfig{
+		Addr: fmt.Sprintf("http://%s:%d", addr, port),
 	})
-	flxDB.port = port
-	flxDB.addr = addr
-	flxDB.database = database
 	if err != nil {
 		return err
 	}
+	flxDB.port = port
+	flxDB.addr = addr
+	flxDB.database = database
 	return nil
 }
 
-// EmitSingle sends a single metric out using the current influx db client. It implicitly adds the source host where
-// the metric is coming from. This operation is non-blocking since we use the UDP client.
+// EmitSingle sends a single metric out using the current InfluxDB client. It adds the source host where the metric is coming from.
 func (flxDB *InfluxDB) EmitSingle(m SingleMetric) {
 	if m.Tags == nil {
 		m.Tags = make(map[string]string)
@@ -48,20 +44,33 @@ func (flxDB *InfluxDB) EmitSingle(m SingleMetric) {
 	if !ok {
 		m.Tags["host"], _ = os.Hostname()
 	}
-	// additionalFields can not be empty
+	// additionalFields cannot be empty
 	if m.AdditionalFields == nil {
 		m.AdditionalFields = make(map[string]interface{})
 	}
 	m.AdditionalFields["value"] = m.Value
-	point, _ := influxdb_client.NewPoint(m.Name,
+	point, err := influxdb_client.NewPoint(m.Name,
 		m.Tags,
 		m.AdditionalFields,
 		time.Now())
-	bp, _ := influxdb_client.NewBatchPoints(influxdb_client.BatchPointsConfig{
+	if err != nil {
+		fmt.Printf("Error creating point: %s\n", err)
+		return
+	}
+	
+	bp, err := influxdb_client.NewBatchPoints(influxdb_client.BatchPointsConfig{
 		Database:  flxDB.database,
 		Precision: "ns",
 	})
+	if err != nil {
+		fmt.Printf("Error creating batch points: %s\n", err)
+		return
+	}
 	bp.AddPoint(point)
-	// Fire and forget
-	flxDB.client.Write(bp)
+
+	// Send the batch of points to InfluxDB
+	err = flxDB.client.Write(bp)
+	if err != nil {
+		fmt.Printf("Error writing to InfluxDB: %s\n", err)
+	}
 }

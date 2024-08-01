@@ -37,6 +37,7 @@ type ProberContextSubConfig struct {
 	Cookies map[string]string `json:"cookies"`
 	// Whether to follow http redirects from the server or not. Empty stanza uses the default 10 level redirect limit.
 	AllowRedirects bool `json:"allow_redirects,omitempty"`
+	Timeout        int  `json:"timeout,omitempty"`
 }
 
 // ProberSubConfig holds configuration of each prober.

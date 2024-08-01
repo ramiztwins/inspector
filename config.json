@@ -2,72 +2,317 @@
   "inspector": {
     "region": "west-coast"
   },
-  "metrics_db":
-  [
+  "metrics_db": [
     {
       "influxdb": {
         "database_url": "inspector-influxdb",
-        "port": 8087,
+        "port": 8086,
         "database_name": "inspector"
       }
     }
   ],
-  "target_assignments":
-  {
-    "list": [1984],
-    "ranges":  []
+  "target_assignments": {
+    "list": ["GH", "Alyat", "Sumnotes", 
+             "Marintel", "BP",
+             "Shell", "Chevron", "ExxonMobil",
+             "Petrobras", "TotalEnergies", "Saipem",
+             "Subsea7", "OceanInfinity",
+             "Schlumberger",
+             "NobleCorp", "Weatherford"]
   },
-  "targets":
-  [
+  "targets": [
     {
-      "id": "1984",
+      "id": "GH",
       "name": "Github's pricing page",
-      "probers":
-      [
+      "probers": [
         {
-          "id": "1",
+          "id": "GH",
           "name": "basic_http_prober",
-          "context":
-          {
+          "context": {
             "url": "https://github.com/pricing",
             "method": "GET",
-            "parameters":
-            {
+            "parameters": {
               "param1": "foo",
               "param2": "bar"
             },
-            "cookies":
-            {
+            "cookies": {
               "name": "value"
             },
-            "allow_redirects": false
-          }
-        },
-        {
-          "id": "2",
-          "name": "workflow_prober",
-          "context":
-          {
-            "login_stage":
-            {
-              "url": "https://finance.yahoo.com",
-              "method": "POST",
-              "parameters":
-              {
-                "username" : "darth",
-                "password": "vader",
-                "repeat_password": "vader",
-                "enc_type": "text/plain"
-              }
-            }
+            "allow_redirects": false,
+            "timeout": 6
           }
         }
       ]
     },
     {
-        "id": "2040",
-        "name": "a massively successful ecommerce website",
-        "context": {}
+      "id": "Alyat",
+      "name": "Alyat's website",
+      "probers": [
+        {
+          "id": "Alyat",
+          "name": "basic_http_prober",
+          "context": {
+            "url": "https://alyat.wavekeeper.com",
+            "method": "GET",
+            "parameters": {},
+            "cookies": {},
+            "allow_redirects": false,
+            "timeout": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "Sumnotes",
+      "name": "Sumnotes",
+      "probers": [
+        {
+          "id": "Sumnotes",
+          "name": "basic_http_prober",
+          "context": {
+            "url": "https://sumnotes.net",
+            "method": "GET",
+            "parameters": {},
+            "cookies": {},
+            "allow_redirects": false,
+            "timeout": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "Marintel",
+      "name": "Marintel",
+      "probers": [
+        {
+          "id": "Marintel",
+          "name": "basic_http_prober",
+          "context": {
+            "url": "https://marintel.com",
+            "method": "GET",
+            "parameters": {},
+            "cookies": {},
+            "allow_redirects": false,
+            "timeout": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "BP",
+      "name": "BP",
+      "probers": [
+        {
+          "id": "BP",
+          "name": "basic_http_prober",
+          "context": {
+            "url": "https://bp.com",
+            "method": "GET",
+            "parameters": {},
+            "cookies": {},
+            "allow_redirects": false,
+            "timeout": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "Shell",
+      "name": "Shell",
+      "probers": [
+        {
+          "id": "Shell",
+          "name": "basic_http_prober",
+          "context": {
+            "url": "https://shell.com",
+            "method": "GET",
+            "parameters": {},
+            "cookies": {},
+            "allow_redirects": false,
+            "timeout": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "Chevron",
+      "name": "Chevron",
+      "probers": [
+        {
+          "id": "Chevron",
+          "name": "basic_http_prober",
+          "context": {
+            "url": "https://chevron.com",
+            "method": "GET",
+            "parameters": {},
+            "cookies": {},
+            "allow_redirects": false,
+            "timeout": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "ExxonMobil",
+      "name": "ExxonMobil",
+      "probers": [
+        {
+          "id": "ExxonMobil",
+          "name": "basic_http_prober",
+          "context": {
+            "url": "https://exxonmobil.com",
+            "method": "GET",
+            "parameters": {},
+            "cookies": {},
+            "allow_redirects": false,
+            "timeout": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "Petrobras",
+      "name": "Petrobras",
+      "probers": [
+        {
+          "id": "Petrobras",
+          "name": "basic_http_prober",
+          "context": {
+            "url": "https://petrobras.com",
+            "method": "GET",
+            "parameters": {},
+            "cookies": {},
+            "allow_redirects": false,
+            "timeout": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "TotalEnergies",
+      "name": "TotalEnergies",
+      "probers": [
+        {
+          "id": "TotalEnergies",
+          "name": "basic_http_prober",
+          "context": {
+            "url": "https://totalenergies.com",
+            "method": "GET",
+            "parameters": {},
+            "cookies": {},
+            "allow_redirects": false,
+            "timeout": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "Saipem",
+      "name": "Saipem",
+      "probers": [
+        {
+          "id": "Saipem",
+          "name": "basic_http_prober",
+          "context": {
+            "url": "https://saipem.com",
+            "method": "GET",
+            "parameters": {},
+            "cookies": {},
+            "allow_redirects": false,
+            "timeout": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "Subsea7",
+      "name": "Subsea7",
+      "probers": [
+        {
+          "id": "Subsea7",
+          "name": "basic_http_prober",
+          "context": {
+            "url": "https://subsea7.com",
+            "method": "GET",
+            "parameters": {},
+            "cookies": {},
+            "allow_redirects": false,
+            "timeout": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "OceanInfinity",
+      "name": "Ocean Infinity",
+      "probers": [
+        {
+          "id": "OceanInfinity",
+          "name": "basic_http_prober",
+          "context": {
+            "url": "https://oceaninfinity.com",
+            "method": "GET",
+            "parameters": {},
+            "cookies": {},
+            "allow_redirects": false,
+            "timeout": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "Schlumberger",
+      "name": "Schlumberger",
+      "probers": [
+        {
+          "id": "Schlumberger",
+          "name": "basic_http_prober",
+          "context": {
+            "url": "https://slb.com",
+            "method": "GET",
+            "parameters": {},
+            "cookies": {},
+            "allow_redirects": false,
+            "timeout": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "NobleCorp",
+      "name": "Noble Corp",
+      "probers": [
+        {
+          "id": "NobleCorp",
+          "name": "basic_http_prober",
+          "context": {
+            "url": "https://noblecorp.com",
+            "method": "GET",
+            "parameters": {},
+            "cookies": {},
+            "allow_redirects": false,
+            "timeout": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "Weatherford",
+      "name": "Weatherford",
+      "probers": [
+        {
+          "id": "Weatherford",
+          "name": "basic_http_prober",
+          "context": {
+            "url": "https://weatherford.com",
+            "method": "GET",
+            "parameters": {},
+            "cookies": {},
+            "allow_redirects": false,
+            "timeout": 6
+          }
+        }
+      ]
     }
   ]
 }
