@@ -1,12 +1,10 @@
 package probers
 
 import (
-	"context"
 	"crypto/tls"
 	"inspector/metrics"
 	"inspector/mylogger"
 	"io"
-	"net"
 	"net/http"
 	"net/http/cookiejar"
 	"net/http/httptrace"
@@ -36,23 +34,27 @@ func (httpProber *HTTPProber) Initialize(targetID, proberID string) error {
 // Connect starts a new connection. We need a new connection on each Connect() invocation because we want to measure
 // the connection time from scratch.
 func (httpProber *HTTPProber) Connect(c chan metrics.SingleMetric) error {
+	var dnsStart, connectStart time.Time
+	var dnsDuration, connectDuration time.Duration
+
+	// Setup HTTP transport and trace to capture DNS and Connect timings
 	transport := &http.Transport{
-		DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
-			start := time.Now()
-			conn, err := net.Dial(network, addr)
-			if err != nil {
-				mylogger.MainLogger.Errorf("Connection Failed for URL %s. Method: %s. Error: %s",
-					httpProber.Url, httpProber.Method, err)
-				return nil, err
-			}
-			c <- metrics.CreateSingleMetric("connect_time", time.Since(start).Milliseconds(), nil,
-				map[string]string{
-					"target_id": httpProber.getTargetID(),
-					"prober_id": httpProber.getProberID(),
-				})
-			return conn, nil
-		},
 		DisableKeepAlives: true,
+	}
+
+	trace := &httptrace.ClientTrace{
+		DNSStart: func(info httptrace.DNSStartInfo) {
+			dnsStart = time.Now()
+		},
+		DNSDone: func(info httptrace.DNSDoneInfo) {
+			dnsDuration = time.Since(dnsStart)
+		},
+		ConnectStart: func(network, addr string) {
+			connectStart = time.Now()
+		},
+		ConnectDone: func(network, addr string, err error) {
+			connectDuration = time.Since(connectStart)
+		},
 	}
 
 	httpProber.client = &http.Client{
@@ -62,7 +64,7 @@ func (httpProber *HTTPProber) Connect(c chan metrics.SingleMetric) error {
 
 	// The default http client follows redirects 10 levels deep.
 	// Client should not follow http redirects if instructed by the config
-	if (!httpProber.AllowRedirects) {
+	if !httpProber.AllowRedirects {
 		httpProber.client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
 		}
@@ -83,6 +85,32 @@ func (httpProber *HTTPProber) Connect(c chan metrics.SingleMetric) error {
 	}
 	jar.SetCookies(baseURL, cookies)
 	httpProber.client.Jar = jar
+
+	// Create a request with tracing enabled
+	req, _ := http.NewRequest(httpProber.Method, httpProber.Url, nil)
+	req = req.WithContext(httptrace.WithClientTrace(req.Context(), trace))
+
+	// Perform the request to measure the connect time and DNS lookup
+	resp, err := httpProber.client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	// Report DNS lookup time
+	c <- metrics.CreateSingleMetric("dns_lookup_time", dnsDuration.Milliseconds(), nil,
+		map[string]string{
+			"target_id": httpProber.getTargetID(),
+			"prober_id": httpProber.getProberID(),
+		})
+
+	// Report Connect time
+	c <- metrics.CreateSingleMetric("connect_time", connectDuration.Milliseconds(), nil,
+		map[string]string{
+			"target_id": httpProber.getTargetID(),
+			"prober_id": httpProber.getProberID(),
+		})
+
 	return nil
 }
 
