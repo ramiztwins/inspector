@@ -28,7 +28,7 @@ type HTTPProber struct {
 	Parameters     map[string]string
 	Cookies        map[string]string
 	AllowRedirects bool
-	Timeout        int 
+	Timeout        time.Duration 
 	client         *http.Client
 }
 
@@ -61,7 +61,7 @@ func (httpProber *HTTPProber) Connect(c chan metrics.SingleMetric) error {
 		DisableKeepAlives: true,
 	}
 	httpProber.client = &http.Client{
-		Timeout:   time.Duration(httpProber.Timeout) * time.Second,
+		Timeout:   httpProber.Timeout,
 		Transport: transport,
 	}
 

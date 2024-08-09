@@ -33,7 +33,7 @@
                 "name": "value"
               },
               "allow_redirects": false,
-              "timeout": 6
+              "timeout": "6s"
             }
           }
         ]
@@ -51,7 +51,7 @@
               "parameters": {},
               "cookies": {},
               "allow_redirects": false,
-              "timeout": 6
+              "timeout": "6s"
             }
           }
         ]
