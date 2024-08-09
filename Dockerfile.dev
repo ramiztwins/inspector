@@ -12,4 +12,4 @@ ENV GOPATH=/go PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
 
 WORKDIR /export
 
-CMD ["go", "run", "main.go", "--config_path", "config.json"]
+CMD ["go", "run", "main.go", "--config_path", "config.dev.json"]

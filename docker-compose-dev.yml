@@ -15,7 +15,7 @@ services:
   inspector:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     container_name: inspector
     networks:
       - inspectornet
