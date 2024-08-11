@@ -17,6 +17,7 @@ type InfluxDB struct {
 	addr     string
 	port     int
 	database string
+	metrics  []*influxdb_client.Point
 }
 
 // InitializeClient creates a new HTTP based InfluxDB client. This client will be used for the lifetime of the application.
@@ -31,6 +32,7 @@ func (flxDB *InfluxDB) InitializeClient(addr string, port int, database string) 
 	flxDB.port = port
 	flxDB.addr = addr
 	flxDB.database = database
+	flxDB.metrics = make([]*influxdb_client.Point, 0)
 	return nil
 }
 
@@ -57,7 +59,7 @@ func (flxDB *InfluxDB) EmitSingle(m SingleMetric) {
 		fmt.Printf("Error creating point: %s\n", err)
 		return
 	}
-	
+
 	bp, err := influxdb_client.NewBatchPoints(influxdb_client.BatchPointsConfig{
 		Database:  flxDB.database,
 		Precision: "ns",
@@ -73,4 +75,56 @@ func (flxDB *InfluxDB) EmitSingle(m SingleMetric) {
 	if err != nil {
 		fmt.Printf("Error writing to InfluxDB: %s\n", err)
 	}
+}
+
+// CollectMetrics accumulates metrics for subsequent sending.
+func (flxDB *InfluxDB) CollectMetrics(m SingleMetric) {
+	if m.Tags == nil {
+		m.Tags = make(map[string]string)
+		m.Tags["host"], _ = os.Hostname()
+	}
+	_, ok := m.Tags["host"]
+	if !ok {
+		m.Tags["host"], _ = os.Hostname()
+	}
+	// additionalFields cannot be empty
+	if m.AdditionalFields == nil {
+		m.AdditionalFields = make(map[string]interface{})
+	}
+	m.AdditionalFields["value"] = m.Value
+	point, err := influxdb_client.NewPoint(m.Name,
+		m.Tags,
+		m.AdditionalFields,
+		time.Now())
+	if err != nil {
+		fmt.Printf("Error creating point: %s\n", err)
+		return
+	}
+	flxDB.metrics = append(flxDB.metrics, point)
+}
+
+// EmitMultiple sends all accumulated metrics to InfluxDB in one request.
+func (flxDB *InfluxDB) EmitMultiple() {
+	if len(flxDB.metrics) == 0 {
+		return
+	}
+	bp, err := influxdb_client.NewBatchPoints(influxdb_client.BatchPointsConfig{
+		Database:  flxDB.database,
+		Precision: "ns",
+	})
+	if err != nil {
+		fmt.Printf("Error creating batch points: %s\n", err)
+		return
+	}
+	bp.AddPoints(flxDB.metrics)
+
+	// Send the batch of points to InfluxDB
+	err = flxDB.client.Write(bp)
+	if err != nil {
+		fmt.Printf("Error writing to InfluxDB: %s\n", err)
+		return
+	}
+
+	// Clear the accumulated metrics after successful sending
+	flxDB.metrics = flxDB.metrics[:0]
 }
