@@ -16,6 +16,8 @@ type SingleMetric struct {
 type MetricsDB interface {
 	InitializeClient(addr string, port int, database string) error
 	EmitSingle(m SingleMetric)
+	CollectMetrics(m SingleMetric)
+	EmitMultiple()
 }
 
 func CreateSingleMetric(name string, value int64, additionalFields map[string]interface{}, tags map[string]string) SingleMetric {
