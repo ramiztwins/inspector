@@ -33,10 +33,10 @@
             "cookies": {
               "name": "value"
             },
-            "allow_redirects": false
+            "allow_redirects": "5"
           }
         }
       ]
     }
   ]
-},
+}
