@@ -9,19 +9,11 @@ import (
 )
 
 func main() {
-	schema := jsonschema.Reflect(&config.Config{})
-	if schema.Extras == nil {
-		schema.Extras = make(map[string]interface{})
-	}
-
-	schema.Extras["additionalProperties"] = true
-
-	schemaJSON, err := json.MarshalIndent(schema, "", "  ")
+	schemaJSON, err := json.MarshalIndent(jsonschema.Reflect(&config.Config{}), "", "  ")
 	if err != nil {
 		fmt.Println("Error marshaling JSON schema:", err)
 		return
 	}
-
 	if file, err := os.Create("schema.json"); err != nil {
 		fmt.Println("Error creating file:", err)
 	} else {
