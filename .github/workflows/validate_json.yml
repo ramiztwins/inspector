@@ -29,7 +29,7 @@ jobs:
     - name: Display generated schema.json
       run: |
         echo "📂 Opening schema.json..."
-        cat schema/schema.json
+        cat schema.json
 
     - name: Install Node.js
       uses: actions/setup-node@v3
@@ -41,11 +41,11 @@ jobs:
 
     - name: Validate JSON files
       run: |
-        SCHEMA_PATH=$(pwd)/schema/schema.json
+        SCHEMA_PATH=$(pwd)/schema.json
         echo "Using schema file: $SCHEMA_PATH"
         shopt -s nullglob
         for file in *.json; do
-          [ "$file" = "$SCHEMA_PATH" ] && continue
+          [ "$file" = "schema.json" ] && continue
           echo "🔍 Validating $file..."
           if jq empty "$file" > /dev/null 2>&1; then
             if ajv validate -s "$SCHEMA_PATH" -d "$file" --errors=json > validation_output.json 2>&1; then
