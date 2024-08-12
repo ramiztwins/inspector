@@ -37,7 +37,7 @@ jobs:
         node-version: '16'
 
     - name: Install ajv-cli
-      run: npm install -g ajv-cli
+      run: npm install -g ajv-cli@latest
 
     - name: Validate JSON files
       run: |
