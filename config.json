@@ -33,7 +33,7 @@
             "cookies": {
               "name": "value"
             },
-            "allow_redirects": "5"
+            "allow_redirects": false
           }
         }
       ]
