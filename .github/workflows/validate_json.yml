@@ -36,10 +36,10 @@ jobs:
       with:
         python-version: '3.x'
 
-    - name: Install jsonschema
-      run: pip install jsonschema
+    - name: Install check-jsonschema
+      run: pip install check-jsonschema
 
     - name: Validate config.json
       run: |
         echo "🔍 Validating config.json..."
-        python -m jsonschema -i config.json schema.json
+        check-jsonschema --schemafile=schema.json config.json
