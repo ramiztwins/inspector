@@ -16,28 +16,43 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.20'
+
+    - name: Build and run Go code to generate schema.json
+      run: |
+        go run schema/schema.go
+        echo "✅ JSON schema generated"
+
     - name: Install Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '14'
 
-    - name: Install dependencies
+    - name: Install ajv-cli
       run: npm install -g ajv-cli
 
     - name: Validate JSON files
       run: |
         for file in *.json; do
-          [ "$file" = "schema.json" ] && continue
+          [ "$file" = "schema/schema.json" ] && continue
           echo -n "🔍 Validating $file... "
           if jq empty "$file" > /dev/null 2>&1; then
-            ajv validate -s schema.json -d "$file" --errors=json > validation_output.json 2>&1
+            ajv validate -s schema/schema.json -d "$file" --errors=json > validation_output.json 2>&1
             if [ $? -ne 0 ]; then
-              echo "❌ Validation failed"
+              echo "❌ Validation failed for $file"
               cat validation_output.json
+              exit 1
             else
-              echo "✅ Valid"
+              echo "✅ $file is valid"
             fi
           else
-            echo "🚫 Syntax Error"
+            echo "🚫 Syntax Error in $file"
+            exit 1
           fi
         done
+
+    - name: Clean up validation output
+      run: rm validation_output.json
