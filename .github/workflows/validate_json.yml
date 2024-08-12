@@ -26,6 +26,11 @@ jobs:
         go run schema/schema.go
         echo "✅ JSON schema generated"
 
+    - name: Display generated schema.json
+      run: |
+        echo "📂 Opening schema.json..."
+        cat schema/schema.json
+
     - name: Install Node.js
       uses: actions/setup-node@v3
       with:
