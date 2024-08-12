@@ -29,22 +29,21 @@ jobs:
     - name: Install Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '14'
+        node-version: '16'
 
     - name: Install ajv-cli
       run: npm install -g ajv-cli
 
     - name: Validate JSON files
       run: |
+        SCHEMA_PATH=$(pwd)/schema/schema.json
+        echo "Using schema file: $SCHEMA_PATH"
         shopt -s nullglob
-        echo "Current directory: $(pwd)"
-        echo "Contents of the working directory:"
-        ls -al
         for file in *.json; do
-          [ "$file" = "schema/schema.json" ] && continue
+          [ "$file" = "$SCHEMA_PATH" ] && continue
           echo "🔍 Validating $file..."
           if jq empty "$file" > /dev/null 2>&1; then
-            if ajv validate -s schema/schema.json -d "$file" --errors=json > validation_output.json 2>&1; then
+            if ajv validate -s "$SCHEMA_PATH" -d "$file" --errors=json > validation_output.json 2>&1; then
               echo "✅ $file is valid"
             else
               echo "❌ Validation failed for $file"
