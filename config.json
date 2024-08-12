@@ -7,7 +7,6 @@
       "influxdb": {
         "database_url": "inspector-influxdb",
         "port": 8087,
-        "protocol": "http",
         "database_name": "inspector"
       }
     }
@@ -37,13 +36,3 @@
     }
   ]
 }
-
-
-
-
-
-
-
-
-
-
