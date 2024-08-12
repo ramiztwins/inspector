@@ -36,17 +36,17 @@ jobs:
 
     - name: Validate JSON files
       run: |
+        shopt -s nullglob
         for file in *.json; do
           [ "$file" = "schema/schema.json" ] && continue
-          echo -n "🔍 Validating $file... "
+          echo "🔍 Validating $file..."
           if jq empty "$file" > /dev/null 2>&1; then
-            ajv validate -s schema/schema.json -d "$file" --errors=json > validation_output.json 2>&1
-            if [ $? -ne 0 ]; then
+            if ajv validate -s schema/schema.json -d "$file" --errors=json > validation_output.json 2>&1; then
+              echo "✅ $file is valid"
+            else
               echo "❌ Validation failed for $file"
               cat validation_output.json
               exit 1
-            else
-              echo "✅ $file is valid"
             fi
           else
             echo "🚫 Syntax Error in $file"
