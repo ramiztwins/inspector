@@ -24,14 +24,9 @@ jobs:
     - name: Build and run Go code to generate schema.json
       run: |
         echo "::group::🏗️ Building Go code..."
-        go run schema/schema.go
+        go run schema/schema.go > /dev/null 2>&1
         echo "✅ JSON schema generated"
         echo "::endgroup::"
-
-    - name: Display generated schema.json
-      run: |
-        echo "📂 Opening schema.json..."
-        cat schema.json
 
     - name: Install Python
       uses: actions/setup-python@v4
@@ -41,14 +36,15 @@ jobs:
     - name: Install check-jsonschema
       run: |
         echo "::group::📦 Installing check-jsonschema..."
-        pip install check-jsonschema
+        pip install check-jsonschema > /dev/null 2>&1
         echo "::endgroup::"
 
     - name: Validate config.json
       run: |
         echo "::group::🔍 Validating config.json..."
-        if check-jsonschema --schemafile=schema.json config.json; then
-          echo "✅ Validation successful!"
+        check-jsonschema --schemafile=schema.json config.json > /dev/null 2>&1
+        if [ $? -eq 0 ]; then
+          echo "✅ Validation was successful!"
         else
           echo "❌ Validation failed!"
           exit 1
