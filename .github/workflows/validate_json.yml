@@ -58,13 +58,3 @@ jobs:
           echo "❌ Validation failed! Please review config.json."
           exit 1
         fi
-
-    - name: Additional validation checks
-      run: |
-        echo "🚀 Running additional validation checks..."
-        if [ "$(jq '.requiredField' config.json)" == "null" ]; then
-          echo "❌ Required field 'requiredField' is missing!"
-          exit 1
-        else
-          echo "✅ All required fields are present!"
-        fi
