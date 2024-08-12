@@ -23,8 +23,10 @@ jobs:
 
     - name: Build and run Go code to generate schema.json
       run: |
+        echo "::group::🏗️ Building Go code..."
         go run schema/schema.go
         echo "✅ JSON schema generated"
+        echo "::endgroup::"
 
     - name: Display generated schema.json
       run: |
@@ -37,9 +39,18 @@ jobs:
         python-version: '3.x'
 
     - name: Install check-jsonschema
-      run: pip install check-jsonschema
+      run: |
+        echo "::group::📦 Installing check-jsonschema..."
+        pip install check-jsonschema
+        echo "::endgroup::"
 
     - name: Validate config.json
       run: |
-        echo "🔍 Validating config.json..."
-        check-jsonschema --schemafile=schema.json config.json
+        echo "::group::🔍 Validating config.json..."
+        if check-jsonschema --schemafile=schema.json config.json; then
+          echo "✅ Validation successful!"
+        else
+          echo "❌ Validation failed!"
+          exit 1
+        fi
+        echo "::endgroup::"
