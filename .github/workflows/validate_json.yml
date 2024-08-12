@@ -36,8 +36,8 @@ jobs:
       with:
         node-version: '16'
 
-    - name: Install AJV
-      run: npm install ajv@8 ajv-cli@4
+    - name: Install jsonschema
+      run: npm install -g jsonschema
 
     - name: Validate JSON files
       run: |
@@ -48,8 +48,8 @@ jobs:
           [ "$file" = "schema.json" ] && continue
           echo "🔍 Validating $file..."
           if jq empty "$file" > /dev/null 2>&1; then
-            echo "Running AJV validation..."
-            npx ajv validate -s "$SCHEMA_PATH" -d "$file" --strict=false > validation_output.json 2>&1
+            echo "Running jsonschema validation..."
+            jsonschema -i "$file" "$SCHEMA_PATH" > validation_output.json 2>&1
             if [ $? -ne 0 ]; then
               echo "❌ Validation failed for $file"
               cat validation_output.json || echo "No validation output available"
