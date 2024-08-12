@@ -27,7 +27,7 @@
               "param2": "bar"
             },
             "cookies": {
-              "name": "value"
+              "nameee": 1
             },
             "allow_redirects": false
           }
