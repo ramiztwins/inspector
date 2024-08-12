@@ -1,4 +1,3 @@
-{
   "inspector": {
     "region": "west-coast"
   },
@@ -41,25 +40,6 @@
               "name": "value"
             },
             "allow_redirects": false
-          }
-        },
-        {
-          "id": "2",
-          "name": "workflow_prober",
-          "context":
-          {
-            "login_stage":
-            {
-              "url": "https://finance.yahoo.com",
-              "method": "POST",
-              "parameters":
-              {
-                "username" : "darth",
-                "password": "vader",
-                "repeat_password": "vader",
-                "enc_type": "text/plain"
-              }
-            }
           }
         }
       ]
