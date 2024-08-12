@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"inspector/mylogger"
 	"io/ioutil"
-	"time"
 )
 
 /*
@@ -37,8 +36,8 @@ type ProberContextSubConfig struct {
 	// Holds the list of cookies
 	Cookies map[string]string `json:"cookies"`
 	// Whether to follow http redirects from the server or not. Empty stanza uses the default 10 level redirect limit.
-	AllowRedirects bool `json:"allow_redirects,omitempty"`
-	Timeout        time.Duration     `json:"timeout,omitempty"`
+	AllowRedirects bool   `json:"allow_redirects,omitempty"`
+	Timeout        string `json:"timeout,omitempty"`
 }
 
 // ProberSubConfig holds configuration of each prober.
@@ -71,30 +70,6 @@ type Config struct {
 	Inspector    InspectorSubConfig   `json:"inspector"`
 	TimeSeriesDB []MetricsDBSubConfig `json:"metrics_db"`
 	Targets      []TargetSubConfig    `json:"targets"`
-}
-
-// Custom UnmarshalJSON for ProberContextSubConfig (for now the only special purpose is process Timeout values)
-func (p *ProberContextSubConfig) UnmarshalJSON(data []byte) error {
-	type Alias ProberContextSubConfig
-	aux := &struct {
-		Timeout string `json:"timeout,omitempty"`
-		*Alias
-	}{
-		Alias: (*Alias)(p),
-	}
-	if err := json.Unmarshal(data, aux); err != nil {
-		mylogger.MainLogger.Errorf("Failed to unmarshal ProberContextSubConfig: %s", err)
-		return err
-	}
-	if aux.Timeout != "" {
-		duration, err := time.ParseDuration(aux.Timeout)
-		if err != nil {
-			mylogger.MainLogger.Errorf("Invalid duration format: %s", err)
-			return err
-		}
-		p.Timeout = duration
-	}
-	return nil
 }
 
 // NewConfig creates a new configuration. It currently assumes only json configuration.

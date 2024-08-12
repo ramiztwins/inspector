@@ -28,7 +28,7 @@ type HTTPProber struct {
 	Parameters     map[string]string
 	Cookies        map[string]string
 	AllowRedirects bool
-	Timeout        time.Duration 
+	Timeout        string
 	client         *http.Client
 }
 
@@ -42,6 +42,12 @@ func (httpProber *HTTPProber) Initialize(targetID, proberID string) error {
 // the connection time from scratch.
 func (httpProber *HTTPProber) Connect(c chan metrics.SingleMetric) error {
 	//TODO: handle https urls in httpProber
+	timeoutDuration, err := time.ParseDuration(httpProber.Timeout)
+	if err != nil {
+		mylogger.MainLogger.Errorf("Invalid timeout duration: %s", err)
+		return err
+	}
+
 	transport := &http.Transport{
 		DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
 			start := time.Now()
@@ -61,7 +67,7 @@ func (httpProber *HTTPProber) Connect(c chan metrics.SingleMetric) error {
 		DisableKeepAlives: true,
 	}
 	httpProber.client = &http.Client{
-		Timeout:   httpProber.Timeout,
+		Timeout:   timeoutDuration,
 		Transport: transport,
 	}
 
