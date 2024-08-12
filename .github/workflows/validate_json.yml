@@ -48,10 +48,11 @@ jobs:
           [ "$file" = "schema.json" ] && continue
           echo "🔍 Validating $file..."
           if jq empty "$file" > /dev/null 2>&1; then
+            echo "Running AJV validation..."
             npx ajv validate -s "$SCHEMA_PATH" -d "$file" --strict=false > validation_output.json 2>&1
             if [ $? -ne 0 ]; then
               echo "❌ Validation failed for $file"
-              cat validation_output.json
+              cat validation_output.json || echo "No validation output available"
               exit 1
             else
               echo "✅ $file is valid"
@@ -63,4 +64,5 @@ jobs:
         done
 
     - name: Clean up validation output
-      run: rm validation_output.json
+      if: always()
+      run: rm -f validation_output.json
