@@ -37,6 +37,9 @@ jobs:
     - name: Validate JSON files
       run: |
         shopt -s nullglob
+        echo "Current directory: $(pwd)"
+        echo "Contents of the working directory:"
+        ls -al
         for file in *.json; do
           [ "$file" = "schema/schema.json" ] && continue
           echo "🔍 Validating $file..."
