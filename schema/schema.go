@@ -10,6 +10,10 @@ import (
 
 func main() {
 	schema := jsonschema.Reflect(&config.Config{})
+	if schema.Extras == nil {
+		schema.Extras = make(map[string]interface{})
+	}
+
 	schema.Extras["additionalProperties"] = true
 
 	schemaJSON, err := json.MarshalIndent(schema, "", "  ")
