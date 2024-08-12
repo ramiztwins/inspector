@@ -22,7 +22,7 @@ func main() {
 		return
 	}
 
-	if file, err := os.Create("schema/schema.json"); err != nil {
+	if file, err := os.Create("schema.json"); err != nil {
 		fmt.Println("Error creating file:", err)
 	} else {
 		defer file.Close()
