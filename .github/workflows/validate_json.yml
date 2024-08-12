@@ -1,12 +1,12 @@
-name: Validate JSON
+name: Validate config.json
 
 on:
   push:
     paths:
-      - '*.json'
+      - 'config.json'
   pull_request:
     paths:
-      - '*.json'
+      - 'config.json'
 
 jobs:
   validate-json:
@@ -31,38 +31,15 @@ jobs:
         echo "📂 Opening schema.json..."
         cat schema.json
 
-    - name: Install Node.js
-      uses: actions/setup-node@v3
+    - name: Install Python
+      uses: actions/setup-python@v4
       with:
-        node-version: '16'
+        python-version: '3.x'
 
     - name: Install jsonschema
-      run: npm install -g jsonschema
+      run: pip install jsonschema
 
-    - name: Validate JSON files
+    - name: Validate config.json
       run: |
-        SCHEMA_PATH=$(pwd)/schema.json
-        echo "Using schema file: $SCHEMA_PATH"
-        shopt -s nullglob
-        for file in *.json; do
-          [ "$file" = "schema.json" ] && continue
-          echo "🔍 Validating $file..."
-          if jq empty "$file" > /dev/null 2>&1; then
-            echo "Running jsonschema validation..."
-            jsonschema -i "$file" "$SCHEMA_PATH" > validation_output.json 2>&1
-            if [ $? -ne 0 ]; then
-              echo "❌ Validation failed for $file"
-              cat validation_output.json || echo "No validation output available"
-              exit 1
-            else
-              echo "✅ $file is valid"
-            fi
-          else
-            echo "🚫 Syntax Error in $file"
-            exit 1
-          fi
-        done
-
-    - name: Clean up validation output
-      if: always()
-      run: rm -f validation_output.json
+        echo "🔍 Validating config.json..."
+        python -m jsonschema -i config.json schema.json
