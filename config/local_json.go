@@ -15,7 +15,6 @@ type InfluxDBSubConfig struct {
 	DatabaseURL  string `json:"database_url"`
 	Port         int    `json:"port"`
 	DatabaseName string `json:"database_name"`
-	Protocol     string `json:"transport_protocol"`
 }
 
 type MySQLDBSubConfig struct {
