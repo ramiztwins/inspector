@@ -48,7 +48,7 @@ jobs:
           [ "$file" = "schema.json" ] && continue
           echo "🔍 Validating $file..."
           if jq empty "$file" > /dev/null 2>&1; then
-            if ajv validate -s "$SCHEMA_PATH" -d "$file" --errors=json > validation_output.json 2>&1; then
+            if ajv validate --meta-schema=draft-07 -s "$SCHEMA_PATH" -d "$file" --errors=json > validation_output.json 2>&1; then
               echo "✅ $file is valid"
             else
               echo "❌ Validation failed for $file"
