@@ -76,6 +76,7 @@ jobs:
       run: |
         echo "🔍 Validating config.prod.json against schema..."
         if check-jsonschema --schemafile=schema.json config.prod.json >> validation_output.txt 2>&1; then
+          sed -i '$d' validation_output.txt
           echo "  ✅ Validation successful." | tee -a validation_output.txt
         else
           echo "  ❌ Validation failed." | tee -a validation_output.txt
