@@ -19,26 +19,27 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Run Gitleaks on config files
-      uses: zricethezav/gitleaks-action@v1
+    - name: Run TruffleHog on config files
+      uses: trufflesecurity/trufflehog@v3
       with:
-        args: detect --source=. --redact
+        scan: repo
+        format: json
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
-    - name: Create sens.log.txt with results
+    - name: Check config.dev.yml and config.prod.yml for sensitive data
       run: |
-        echo "🔍 **Checking config.dev.yml for sensitive data...**" > sens.log.txt
-        if grep -q "detector" ./gitleaks-report.json; then
-          echo "❌ Gitleaks found issues in config.dev.yml" >> sens.log.txt
+        echo "🔍 **Checking config.dev.yml for sensitive data...**" > log.txt
+        if grep -q "config.dev.yml" trufflehog.json; then
+          echo "❌ TruffleHog found issues in config.dev.yml" >> log.txt
         else
-          echo "✅ No issues found in config.dev.yml" >> sens.log.txt
+          echo "✅ No issues found in config.dev.yml" >> log.txt
         fi
-        echo "🔍 **Checking config.prod.yml for sensitive data...**" >> sens.log.txt
-        if grep -q "detector" ./gitleaks-report.json; then
-          echo "❌ Gitleaks found issues in config.prod.yml" >> sens.log.txt
+        echo "🔍 **Checking config.prod.yml for sensitive data...**" >> log.txt
+        if grep -q "config.prod.yml" trufflehog.json; then
+          echo "❌ TruffleHog found issues in config.prod.yml" >> log.txt
         else
-          echo "✅ No issues found in config.prod.yml" >> sens.log.txt
+          echo "✅ No issues found in config.prod.yml" >> log.txt
         fi
 
     - name: Add result as comment
@@ -47,6 +48,6 @@ jobs:
       with:
         header: sensitive
         recreate: true
-        path: sens.log.txt
+        path: log.txt
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
