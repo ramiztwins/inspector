@@ -28,6 +28,7 @@ jobs:
     - name: Verify changes
       id: check_changes
       run: |
+        echo "🔍 Checking modified files against main branch..."
         git diff --name-only origin/main > modified_files.txt
         cat modified_files.txt
 
@@ -51,6 +52,7 @@ jobs:
         
     - name: Generate JSON schema
       run: |
+        echo "🚀 Running Go code to generate schema.json..."
         if go run schema/schema.go; then
           echo "  ✅ JSON schema generated successfully." >> validation_output.txt
         else
@@ -60,6 +62,7 @@ jobs:
 
     - name: Install check-jsonschema
       run: |
+        echo "📦 Installing check-jsonschema..."
         if pip install check-jsonschema; then
           echo "  ✅ check-jsonschema installed successfully."
         else
@@ -69,6 +72,7 @@ jobs:
 
     - name: Validate config.prod.json
       run: |
+        echo "🔍 Validating config.prod.json against schema..."
         if check-jsonschema --schemafile=schema.json config.prod.json >> validation_output.txt 2>&1; then
           echo "  ✅ Validation successful." >> validation_output.txt
         else
