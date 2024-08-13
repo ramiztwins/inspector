@@ -28,7 +28,7 @@ jobs:
 
         if grep -qv '^config.prod.json$' modified_files.txt; then
           echo "❌ Changes detected outside config.prod.json!" 
-          echo "🛑 Only modifications to config.prod.json are allowed in this pull request."
+          echo "🛑 Only modifications to config.prod.json are allowed in this pull request." > validation_output.txt
           exit 1
         fi
 
@@ -58,10 +58,15 @@ jobs:
       if: success()
       run: |
         echo "🔍 Validating config.prod.json against schema..."
-        check-jsonschema --schemafile=schema.json config.prod.json
+        if check-jsonschema --schemafile=schema.json config.prod.json; then
+          echo "✅ Validation successful! The config files are correct. 🎉" > validation_output.txt
+        else
+          echo "❌ Validation failed! Please review the config files." > validation_output.txt
+          exit 1
+        fi
 
     - name: Add validation result as comment
-      if: success()
+      if: always()
       uses: marocchino/sticky-pull-request-comment@v2
       with:
         path: validation_output.txt
