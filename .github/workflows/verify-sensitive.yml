@@ -50,4 +50,3 @@ jobs:
         path: sens.log.txt
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
