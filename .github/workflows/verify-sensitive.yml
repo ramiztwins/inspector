@@ -21,17 +21,17 @@ jobs:
     
     - name: Run Gitleaks on config.dev.yml
       run: |
-        echo "🔍 **Checking config.dev.yml for sensitive data...**" > log.txt
-        gitleaks detect --source=config.dev.yml --redact >> log.txt 2>&1 || echo "❌ Gitleaks found issues in config.dev.yml" >> log.txt
-        echo "✅ No issues found in config.dev.yml" >> log.txt
+        echo "🔍 **Checking config.dev.yml for sensitive data...**" > sens.log.txt
+        gitleaks detect --source=config.dev.yml --redact >> sens.log.txt 2>&1 || echo "❌ Gitleaks found issues in config.dev.yml" >> sens.log.txt
+        echo "✅ No issues found in config.dev.yml" >> sens.log.txt
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Run Gitleaks on config.prod.yml
       run: |
-        echo "🔍 **Checking config.prod.yml for sensitive data...**" >> log.txt
-        gitleaks detect --source=config.prod.yml --redact >> log.txt 2>&1 || echo "❌ Gitleaks found issues in config.prod.yml" >> log.txt
-        echo "✅ No issues found in config.prod.yml" >> log.txt
+        echo "🔍 **Checking config.prod.yml for sensitive data...**" >> sens.log.txt
+        gitleaks detect --source=config.prod.yml --redact >> sens.log.txt 2>&1 || echo "❌ Gitleaks found issues in config.prod.yml" >> sens.log.txt
+        echo "✅ No issues found in config.prod.yml" >> sens.log.txt
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -39,7 +39,7 @@ jobs:
       if: always()
       uses: marocchino/sticky-pull-request-comment@v2
       with:
-        path: log.txt
+        path: sens.log.txt
         header: pull-request
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
