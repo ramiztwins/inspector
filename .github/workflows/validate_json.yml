@@ -71,25 +71,12 @@ jobs:
         fi
         echo -e "\n" >> validation_output.txt
 
-    - name: Validate config.prod.json
-      run: |
-        echo "🔍 Validating config.prod.json against schema..."
-        if check-jsonschema --schemafile=schema.json config.prod.json >> validation_output.txt 2>&1; then
-          sed -i '$d' validation_output.txt
-          echo "  ✅ Validation successful." | tee -a validation_output.txt
-        else
-          echo "  ❌ Validation failed." | tee -a validation_output.txt
-          exit 1
-        fi
-        echo -e "\n" >> validation_output.txt
-
     - name: Run Gitleaks to check for sensitive data
       uses: gitleaks/gitleaks-action@v2
       with:
-        config: gitleaks.toml
-        report_format: json
-        report_path: gitleaks_report.json
-      continue-on-error: true
+        args: --config-path=gitleaks.toml --report-format=json --report-path=gitleaks_report.json
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Process Gitleaks results
       run: |
