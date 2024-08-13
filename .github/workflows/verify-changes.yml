@@ -43,7 +43,7 @@ jobs:
       uses: marocchino/sticky-pull-request-comment@v2
       with:
         header: changes
-        append: true
+        recreate: true
         path: log.txt
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
