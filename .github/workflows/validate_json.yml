@@ -39,7 +39,7 @@ jobs:
     - name: Generate JSON schema
       run: |
         echo "🚀 Running Go code to generate schema.json..."
-        if go run schema/schema.go > /dev/null 2>&1; then
+        if go run schema/schema.go; then
           echo "✅ JSON schema generated successfully!"
         else
           echo "❌ Failed to generate JSON schema."
