@@ -19,14 +19,18 @@ jobs:
         fetch-depth: 0
 
     - name: Run Gitleaks on config.dev.yml
-      uses: gitleaks/gitleaks-action@v2.3.4
-      with:
-        args: detect --source=config.dev.yml --redact
+      run: |
+        echo "🔍 **Checking config.dev.yml for sensitive data...**" > log.txt
+        gitleaks detect --source=config.dev.yml --redact >> log.txt 2>&1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Run Gitleaks on config.prod.yml
-      uses: gitleaks/gitleaks-action@v2.3.4
-      with:
-        args: detect --source=config.prod.yml --redact
+      run: |
+        echo "🔍 **Checking config.prod.yml for sensitive data...**" >> log.txt
+        gitleaks detect --source=config.prod.yml --redact >> log.txt 2>&1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Add check result as comment
       if: always()
