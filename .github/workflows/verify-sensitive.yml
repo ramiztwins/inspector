@@ -19,24 +19,17 @@ jobs:
       with:
         fetch-depth: 0
     
-    - name: Install Gitleaks
-      run: |
-        curl -sSL https://git.io/gitleaks | bash
-    
-    - name: Prepare log file
-      run: echo "" > log.txt
-      
     - name: Run Gitleaks on config.dev.yml
-      run: |
-        echo "🔍 **Checking config.dev.yml for sensitive data...**" > log.txt
-        ./gitleaks detect --source=config.dev.yml --redact >> log.txt 2>&1
+      uses: zricethezav/gitleaks-action@v1
+      with:
+        config: config.dev.yml
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Run Gitleaks on config.prod.yml
-      run: |
-        echo "🔍 **Checking config.prod.yml for sensitive data...**" >> log.txt
-        ./gitleaks detect --source=config.prod.yml --redact >> log.txt 2>&1
+      uses: zricethezav/gitleaks-action@v1
+      with:
+        config: config.prod.yml
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
