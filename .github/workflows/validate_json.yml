@@ -83,6 +83,18 @@ jobs:
         fi
         echo -e "\n" >> validation_output.txt
 
+    - name: Run Gitleaks to check for sensitive data
+      run: |
+        echo "🔍 Running Gitleaks to detect sensitive data..."
+        if gitleaks detect --source config.prod.json --no-git --exit-code 1 --redact --report-format json --report-path gitleaks_report.json; then
+          echo "  ✅ No sensitive data found." | tee -a validation_output.txt
+        else
+          echo "  ❌ Sensitive data detected!" | tee -a validation_output.txt
+          cat gitleaks_report.json >> validation_output.txt
+          exit 1
+        fi
+        echo -e "\n" >> validation_output.txt
+
     - name: Add validation result as comment
       if: always()
       uses: marocchino/sticky-pull-request-comment@v2
