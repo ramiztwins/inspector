@@ -28,8 +28,10 @@ jobs:
 
         if grep -qv '^config.prod.json$' modified_files.txt; then
           echo "❌ Changes detected outside config.prod.json!" 
-          echo "🛑 Only modifications to config.prod.json are allowed in this pull request." > validation_output.txt
+          echo "🛑 Only modifications to config.prod.json are allowed in this pull request. Aborting 🚫"
           exit 1
+        else
+          echo "✅ Only config.prod.json was modified. Proceeding to validation... 🎉"
         fi
 
     - name: Set up Go
@@ -37,31 +39,45 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: '1.20'
+      run: echo "🐹 Go environment set up successfully! 👍"
 
     - name: Set up Python
       if: success()
       uses: actions/setup-python@v4
       with:
         python-version: '3.x'
+      run: echo "🐍 Python environment set up successfully! 👍"
 
     - name: Generate JSON schema
       if: success()
       run: |
         echo "🚀 Running Go code to generate schema.json..."
-        go run schema/schema.go
+        if go run schema/schema.go; then
+          echo "✅ JSON schema generated successfully! 🎉"
+        else
+          echo "❌ Failed to generate JSON schema. ⚠️"
+          exit 1
+        fi
 
     - name: Install check-jsonschema
       if: success()
-      run: pip install check-jsonschema
+      run: |
+        echo "📦 Installing check-jsonschema..."
+        if pip install check-jsonschema; then
+          echo "✅ check-jsonschema installed successfully! 🎉"
+        else
+          echo "❌ Failed to install check-jsonschema. ⚠️"
+          exit 1
+        fi
 
     - name: Validate config.prod.json
       if: success()
       run: |
         echo "🔍 Validating config.prod.json against schema..."
-        if check-jsonschema --schemafile=schema.json config.prod.json; then
-          echo "✅ Validation successful! The config files are correct. 🎉" > validation_output.txt
+        if check-jsonschema --schemafile=schema.json config.prod.json > validation_output.txt 2>&1; then
+          echo "✅ Validation successful! The config files are correct. 🎉"
         else
-          echo "❌ Validation failed! Please review the config files." > validation_output.txt
+          echo "❌ Validation failed! Please review the config files. ⚠️"
           exit 1
         fi
 
