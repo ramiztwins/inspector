@@ -21,20 +21,21 @@ jobs:
 
     - name: Download and unpack TruffleHog
       run: |
-        wget https://github.com/trufflesecurity/trufflehog/releases/download/v3.81.0/trufflehog_3.81.0_linux_amd64.tar.gz
+        wget -q https://github.com/trufflesecurity/trufflehog/releases/download/v3.81.0/trufflehog_3.81.0_linux_amd64.tar.gz
         tar -xzf trufflehog_3.81.0_linux_amd64.tar.gz
         chmod +x trufflehog
 
     - name: Run TruffleHog on config files
-      run: ./trufflehog filesystem config.dev.json config.prod.json
+      id: trufflehog_scan
+      run: ./trufflehog filesystem config.dev.json config.prod.json --json --fail > trufflehog-output.json || echo "Secrets found"
 
-    - name: Create log.txt with results
+    - name: Analyze TruffleHog output
       run: |
-        echo "🔍 **Checking config.dev.json and config.prod.json for sensitive data...**" > log.txt
-        if grep -q "Reason" trufflehog-report.json; then
+        if grep -q '"source"' trufflehog-output.json; then
+          echo "🔍 **Checking config.dev.json and config.prod.json for sensitive data...**" > log.txt
           echo "❌ TruffleHog found issues in one of the config files" >> log.txt
         else
-          echo "✅ No issues found in config.dev.json and config.prod.json" >> log.txt
+          echo "✅ No issues found in config.dev.json and config.prod.json" > log.txt
         fi
 
     - name: Add result as comment
