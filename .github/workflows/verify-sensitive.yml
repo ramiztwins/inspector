@@ -26,10 +26,10 @@ jobs:
         chmod +x gitleaks
 
     - name: Run Gitleaks on config.dev.yml
-      run: ./gitleaks detect --path=config.dev.yml --report-format=json --report-path=gitleaks-dev.json
+      run: ./gitleaks detect --source=config.dev.yml --report-format=json --report-path=gitleaks-dev.json
 
     - name: Run Gitleaks on config.prod.yml
-      run: ./gitleaks detect --path=config.prod.yml --report-format=json --report-path=gitleaks-prod.json
+      run: ./gitleaks detect --source=config.prod.yml --report-format=json --report-path=gitleaks-prod.json
 
     - name: Create log.txt with results
       run: |
