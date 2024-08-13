@@ -1,0 +1,43 @@
+name: Verify Sensitive Data
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  check-sensitive-data:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Install Gitleaks
+      run: |
+        echo "📦 **Installing Gitleaks...**"
+        curl -sSfL https://raw.githubusercontent.com/gitleaks/gitleaks/main/install.sh | bash
+
+    - name: Check config.dev.yml for sensitive data
+      run: |
+        echo "🔍 **Checking config.dev.yml for sensitive data...**"
+        ./gitleaks detect --source=config.dev.yml --no-git -v --redact
+
+    - name: Check config.prod.yml for sensitive data
+      run: |
+        echo "🔍 **Checking config.prod.yml for sensitive data...**"
+        ./gitleaks detect --source=config.prod.yml --no-git -v --redact
+
+    - name: Add check result as comment
+      if: always()
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        path: log.txt
+        header: pull-request
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

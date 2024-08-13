@@ -19,29 +19,30 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Prepare validation output file
-      run: echo "" > verify_changes_output.txt
+    - name: Prepare log file
+      run: echo "" > log.txt
 
     - name: Verify changes
       id: check_changes
       run: |
         echo "🔍 Checking modified files against main branch..."
         git diff --name-only origin/main > modified_files.txt
-        cat modified_files.txt | tee -a verify_changes_output.txt
+        cat modified_files.txt | tee -a log.txt
         
         if grep -qv '^config.prod.json$' modified_files.txt; then
-          echo "  ❌ Changes detected outside config.prod.json!" | tee -a verify_changes_output.txt
-          echo "❌ Verification failed: Changes outside config.prod.json detected." | tee -a verify_changes_output.txt
+          echo "❌ Changes detected outside config.prod.json!" | tee -a log.txt
+          echo "❌ Verification failed: Changes outside config.prod.json detected." | tee -a log.txt
           exit 1
         else
-          echo "  ✅ Only config.prod.json was modified." | tee -a verify_changes_output.txt
-          echo "✅ Verification successful: Only config.prod.json was modified." | tee -a verify_changes_output.txt
+          echo "✅ Only config.prod.json was modified." | tee -a log.txt
+          echo "✅ Verification successful: Only config.prod.json was modified." | tee -a log.txt
         fi
 
     - name: Add verification result as comment
       if: always()
       uses: marocchino/sticky-pull-request-comment@v2
       with:
-        path: verify_changes_output.txt
+        path: log.txt
+        header: pull-request
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
