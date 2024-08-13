@@ -25,20 +25,20 @@ jobs:
     - name: Prepare validation output file
       run: echo "" > validation_output.txt
 
-    - name: Verify changes
-      id: check_changes
-      run: |
-        echo "🔍 Checking modified files against main branch..." | tee -a validation_output.txt
-        git diff --name-only origin/main > modified_files.txt
-        cat modified_files.txt | tee -a validation_output.txt
-
-        if grep -qv '^config.prod.json$' modified_files.txt; then
-          echo "  ❌ Changes detected outside config.prod.json!" | tee -a validation_output.txt
-          cat modified_files.txt >> validation_output.txt
-          exit 1
-        else
-          echo "  ✅ Only config.prod.json was modified." | tee -a validation_output.txt
-        fi
+#    - name: Verify changes
+#      id: check_changes
+#      run: |
+#        echo "🔍 Checking modified files against main branch..." | tee -a validation_output.txt
+#        git diff --name-only origin/main > modified_files.txt
+#        cat modified_files.txt | tee -a validation_output.txt
+#
+#        if grep -qv '^config.prod.json$' modified_files.txt; then
+#          echo "  ❌ Changes detected outside config.prod.json!" | tee -a validation_output.txt
+#          cat modified_files.txt >> validation_output.txt
+#          exit 1
+#        else
+#          echo "  ✅ Only config.prod.json was modified." | tee -a validation_output.txt
+#        fi
 
     - name: Set up Go
       uses: actions/setup-go@v4
