@@ -53,9 +53,9 @@ jobs:
       run: |
         echo "🚀 Running Go code to generate schema.json..."
         if go run schema/schema.go; then
-          echo "  ✅ JSON schema generated successfully." | tee -a validation_output.txt
+          echo "  ✅ JSON schema generated successfully."
         else
-          echo "  ❌ Failed to generate JSON schema." | tee -a validation_output.txt
+          echo "  ❌ Failed to generate JSON schema."
           exit 1
         fi
         echo -e "\n" >> validation_output.txt
@@ -64,9 +64,9 @@ jobs:
       run: |
         echo "📦 Installing check-jsonschema..."
         if pip install check-jsonschema; then
-          echo "  ✅ check-jsonschema installed successfully." | tee -a validation_output.txt
+          echo "  ✅ check-jsonschema installed successfully."
         else
-          echo "  ❌ Failed to install check-jsonschema." | tee -a validation_output.txt
+          echo "  ❌ Failed to install check-jsonschema."
           exit 1
         fi
         echo -e "\n" >> validation_output.txt
