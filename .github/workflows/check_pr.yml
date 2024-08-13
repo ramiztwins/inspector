@@ -1,0 +1,50 @@
+name: Check Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  
+
+    - name: Verify only config.prod.json was changed
+      uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          config-prod:
+            - 'config.prod.json'
+          other-files:
+            - '*'
+            - '!config.prod.json'
+
+    - name: Fail if other files are changed
+      if: steps.filter.outputs.other-files == 'true'
+      run: |
+        echo "❌ Changes detected outside config.prod.json!" 
+        echo "🛑 Only modifications to config.prod.json are allowed in this pull request."
+        exit 1
+
+    - name: Trigger validation workflow
+      if: steps.filter.outputs.config-prod == 'true'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.actions.createWorkflowDispatch({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            workflow_id: 'validate_config.yml',
+            ref: context.ref,
+          })
