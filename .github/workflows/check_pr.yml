@@ -17,16 +17,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0
-
-    - name: Fetch all branches
-      run: git fetch --all
+        fetch-depth: 0  
 
     - name: Verify changes
       id: check_changes
       run: |
-        echo "🔍 Checking modified files against main branch..."
-        git diff --name-only origin/main > modified_files.txt
+        echo "🔍 Checking modified files..."
+        git diff --name-only ${{ github.event.before }} ${{ github.sha }} > modified_files.txt
         cat modified_files.txt
 
         if grep -qv '^config.prod.json$' modified_files.txt; then
