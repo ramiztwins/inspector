@@ -17,21 +17,26 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0  
+        fetch-depth: 0
+
+    - name: Fetch all branches
+      run: git fetch --all
+
+    - name: Prepare validation output file
+      run: echo "" > validation_output.txt
 
     - name: Verify changes
       id: check_changes
       run: |
-        echo "🔍 Checking modified files..."
-        git diff --name-only ${{ github.event.before }} ${{ github.sha }} > modified_files.txt
+        echo "🔍 Checking modified files against main branch..."
+        git diff --name-only origin/main > modified_files.txt
         cat modified_files.txt
 
         if grep -qv '^config.prod.json$' modified_files.txt; then
-          echo "❌ Changes detected outside config.prod.json!" 
-          echo "🛑 Only modifications to config.prod.json are allowed in this pull request. Aborting 🚫"
+          echo "❌ Changes detected outside config.prod.json!" >> validation_output.txt
           exit 1
         else
-          echo "✅ Only config.prod.json was modified. Proceeding to validation... 🎉"
+          echo "✅ Only config.prod.json was modified." >> validation_output.txt
         fi
 
     - name: Set up Go
@@ -39,24 +44,18 @@ jobs:
       with:
         go-version: '1.20'
         
-    - name: Go setup confirmation
-      run: echo "🐹 Go environment set up successfully! 👍"
-
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.x'
         
-    - name: Python setup confirmation
-      run: echo "🐍 Python environment set up successfully! 👍"
-
     - name: Generate JSON schema
       run: |
         echo "🚀 Running Go code to generate schema.json..."
         if go run schema/schema.go; then
-          echo "✅ JSON schema generated successfully! 🎉"
+          echo "✅ JSON schema generated successfully." >> validation_output.txt
         else
-          echo "❌ Failed to generate JSON schema. ⚠️"
+          echo "❌ Failed to generate JSON schema." >> validation_output.txt
           exit 1
         fi
 
@@ -64,21 +63,19 @@ jobs:
       run: |
         echo "📦 Installing check-jsonschema..."
         if pip install check-jsonschema; then
-          echo "✅ check-jsonschema installed successfully! 🎉"
+          echo "✅ check-jsonschema installed successfully."
         else
-          echo "❌ Failed to install check-jsonschema. ⚠️"
+          echo "❌ Failed to install check-jsonschema."
           exit 1
         fi
 
     - name: Validate config.prod.json
       run: |
         echo "🔍 Validating config.prod.json against schema..."
-        if check-jsonschema --schemafile=schema.json config.prod.json > validation_output.txt 2>&1; then
-          echo "✅ Validation successful! The config files are correct. 🎉" >> validation_output.txt
-          cat validation_output.txt
+        if check-jsonschema --schemafile=schema.json config.prod.json >> validation_output.txt 2>&1; then
+          echo "✅ Validation successful." >> validation_output.txt
         else
-          echo "❌ Validation failed! Please review the config files. ⚠️" >> validation_output.txt
-          cat validation_output.txt
+          echo "❌ Validation failed." >> validation_output.txt
           exit 1
         fi
 
