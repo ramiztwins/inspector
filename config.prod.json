@@ -47,7 +47,7 @@
               "url": "https://sumnotes.net",
               "method": "GET",
               "pooarameters": {},
-              "cookies": {},
+              "crookies": {},
               "allow_redirects": false,
               "timeout": "12s"
             }
@@ -57,5 +57,3 @@
     ]
   }
   
-
-
