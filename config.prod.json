@@ -1,0 +1,62 @@
+{
+    "inspector": {
+      "region": "west-coast"
+    },
+    "metrics_db": [
+      {
+        "influxdb": {
+          "database_url": "inspector-influxdb",
+          "port": 8086,
+          "database_name": "inspector",
+          "transport_protocol": ""
+        }
+      }
+    ],
+    "targets": [
+      {
+        "id": "GH2",
+        "name": "Github's pricing page",
+        "probers": [
+          {
+            "id": "GH",
+            "name": "basic_http_prober",
+            "context": {
+              "url": "https://github.com/pricing",
+              "method": "GET",
+              "parameters": {
+                "param1": "foo",
+                "param2": "bar"
+              },
+              "cookies": {
+                "name": "value"
+              },
+              "allow_redirects": false,
+              "timeout": "6s"
+            }
+          }
+        ]
+      },
+      {
+        "id": "Sumdnotes",
+        "name": "Sumnotes",
+        "probers": [
+          {
+            "id": "Sumnotes",
+            "name": "basic_http_prober",
+            "context": {
+              "url": "https://sumnotes.net",
+              "method": "GET",
+              "parameters": {},
+              "cookies": {},
+              "allow_redirects": false,
+              "timeout": "6s"
+            }
+          }
+        ]
+      }
+    ]
+  }
+  
+  
+  
+  
