@@ -14,7 +14,7 @@
   ],
   "targets": [
     {
-      "id": "GH2",
+      "id": "gh",
       "name": "Github's pricing page",
       "probers": [
         {
@@ -37,7 +37,7 @@
       ]
     },
     {
-      "id": "Sumdnotes",
+      "id": "sumdnotes",
       "name": "Sumnotes",
       "probers": [
         {
@@ -49,13 +49,29 @@
             "parameters": {},
             "cookies": {},
             "allow_redirects": false,
-            "timeout": "6s"
+            "timeout": "12s"
+          }
+        }
+      ]
+    },
+    {
+      "id": "google",
+      "name": "Google's home page",
+      "probers": [
+        {
+          "id": "Google",
+          "name": "basic_http_prober",
+          "context": {
+            "url": "https://www.google.com",
+            "method": "GET",
+            "parameters": {},
+            "cookies": {},
+            "allow_redirects": true,
+            "timeout": "5s"
           }
         }
       ]
     }
   ]
 }
-
-
 
