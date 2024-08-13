@@ -7,19 +7,15 @@ services:
       - inspectornet
     ports:
       - "8086:8086/tcp"
-      - "8087:8087/udp"
     environment:
-      # Need to enable influxdb's UDP service because we are using UDP client.
-      - INFLUXDB_UDP_DATABASE=inspector
-      - INFLUXDB_UDP_ENABLED=true
-      - INFLUXDB_UDP_BIND_ADDRESS=0.0.0.0:8087
+      - INFLUXDB_DB=inspector
     volumes:
       - influx-data:/var/lib/influxdb
 
   inspector:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     container_name: inspector
     networks:
       - inspectornet
@@ -30,7 +26,9 @@ services:
 
 networks:
   inspectornet:
+    name: inspectornet
     driver: bridge
 
 volumes:
   influx-data:
+    name: influx-data

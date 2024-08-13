@@ -13,10 +13,10 @@ import (
 	"time"
 )
 
-var METRIC_CHANNEL_POLL_INTERVAL = 2 * time.Second
-var TARGET_LIST_SCAN_WAIT_INTERVAL = 5 * time.Second
+var METRIC_CHANNEL_POLL_INTERVAL = 10 * time.Second
+var TARGET_LIST_SCAN_WAIT_INTERVAL = 4 * time.Second
 var PROBER_RESTART_INTERVAL_JITTER_RANGE = 2
-var METRIC_CHANNEL_SIZE = 1000
+var METRIC_CHANNEL_SIZE = 400
 
 func main() {
 
@@ -68,10 +68,11 @@ func main() {
 			select {
 			case m := <-metricsChannel:
 				m.Tags["region"] = c.Inspector.Region
-				mdb.EmitSingle(m)
+				mdb.CollectMetrics(m)
 			default:
 				mylogger.MainLogger.Infof("Metrics channel is empty. Waiting some more...")
 				time.Sleep(METRIC_CHANNEL_POLL_INTERVAL)
+				mdb.EmitMultiple() 
 			}
 		}
 	}()
