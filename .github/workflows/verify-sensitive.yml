@@ -21,17 +21,15 @@ jobs:
 
     - name: Install Gitleaks
       run: |
-        curl -s https://api.github.com/repos/zricethezav/gitleaks/releases/latest | grep "browser_download_url.*linux_x64.tar.gz" | cut -d '"' -f 4 | wget -qi -
-        tar -xzf gitleaks*.tar.gz
+        wget https://github.com/gitleaks/gitleaks/releases/download/v8.17.0/gitleaks_8.17.0_linux_x64.tar.gz
+        tar -xzf gitleaks_8.17.0_linux_x64.tar.gz
         chmod +x gitleaks
 
     - name: Run Gitleaks on config.dev.yml
-      run: |
-        ./gitleaks detect --path=config.dev.yml --report-format=json --report-path=gitleaks-dev.json
+      run: ./gitleaks detect --path=config.dev.yml --report-format=json --report-path=gitleaks-dev.json
 
     - name: Run Gitleaks on config.prod.yml
-      run: |
-        ./gitleaks detect --path=config.prod.yml --report-format=json --report-path=gitleaks-prod.json
+      run: ./gitleaks detect --path=config.prod.yml --report-format=json --report-path=gitleaks-prod.json
 
     - name: Create log.txt with results
       run: |
