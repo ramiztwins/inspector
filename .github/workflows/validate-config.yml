@@ -52,10 +52,9 @@ jobs:
       run: |
         echo "🔍 **Validating config.prod.json against schema...**"
         if check-jsonschema --schemafile=schema.json config.prod.json >> log.txt 2>&1; then
-          sed -i '$ d' log.txt
-          echo "  ✅ **Config Validation successful.**" >> log.txt
+          echo "  ✅ **Config Validation successful.**" > log.txt
         else
-          echo "  ❌ **Config Validation failed.**" >> log.txt
+          echo "  ❌ **Config Validation failed.**" > log.txt
           exit 1
         fi
 
