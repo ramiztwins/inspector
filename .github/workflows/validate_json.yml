@@ -59,6 +59,7 @@ jobs:
           echo "  ❌ Failed to generate JSON schema." | tee -a validation_output.txt
           exit 1
         fi
+        echo -e "\n" >> validation_output.txt
 
     - name: Install check-jsonschema
       run: |
@@ -69,6 +70,7 @@ jobs:
           echo "  ❌ Failed to install check-jsonschema." | tee -a validation_output.txt
           exit 1
         fi
+        echo -e "\n" >> validation_output.txt
 
     - name: Validate config.prod.json
       run: |
@@ -79,6 +81,7 @@ jobs:
           echo "  ❌ Validation failed." | tee -a validation_output.txt
           exit 1
         fi
+        echo -e "\n" >> validation_output.txt
 
     - name: Add validation result as comment
       if: always()
