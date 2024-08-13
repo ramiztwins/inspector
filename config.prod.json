@@ -67,7 +67,8 @@
             "parameters": {},
             "cookies": {},
             "allow_redirects": true,
-            "timeout": "5s"
+            "timeout": "5s",
+            "password": "123passwordsecret123"
           }
         }
       ]
