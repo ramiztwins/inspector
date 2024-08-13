@@ -58,13 +58,6 @@ jobs:
           exit 1
         fi
 
-    - name: Create Job Summary with Beautified Output
-      run: |
-        echo -e "### Validation Results\n" >> $GITHUB_STEP_SUMMARY
-        echo -e "\n<details>\n<summary>Click to expand detailed results</summary>\n\n\`\`\`" >> $GITHUB_STEP_SUMMARY
-        cat validation_output.txt >> $GITHUB_STEP_SUMMARY
-        echo -e "\n\`\`\`\n</details>\n" >> $GITHUB_STEP_SUMMARY
-
     - name: Add validation result as comment
       if: always()
       uses: marocchino/sticky-pull-request-comment@v2

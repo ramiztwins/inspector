@@ -38,13 +38,6 @@ jobs:
           echo "✅ Verification successful: Only config.prod.json was modified." | tee -a verify_changes_output.txt
         fi
 
-    - name: Create Job Summary with Beautified Output
-      run: |
-        echo -e "### Verification Results\n" >> $GITHUB_STEP_SUMMARY
-        echo -e "\n<details>\n<summary>Click to expand detailed results</summary>\n\n\`\`\`" >> $GITHUB_STEP_SUMMARY
-        cat verify_changes_output.txt >> $GITHUB_STEP_SUMMARY
-        echo -e "\n\`\`\`\n</details>\n" >> $GITHUB_STEP_SUMMARY
-
     - name: Add verification result as comment
       if: always()
       uses: marocchino/sticky-pull-request-comment@v2
