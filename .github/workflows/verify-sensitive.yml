@@ -25,25 +25,25 @@ jobs:
         tar -xzf gitleaks_8.17.0_linux_x64.tar.gz
         chmod +x gitleaks
 
-    - name: Run Gitleaks on config.dev.yml
-      run: ./gitleaks detect --source=config.dev.yml --report-format=json --report-path=gitleaks-dev.json
+    - name: Run Gitleaks on config.dev.json
+      run: ./gitleaks detect --source=config.dev.json --report-format=json --report-path=gitleaks-dev.json
 
-    - name: Run Gitleaks on config.prod.yml
-      run: ./gitleaks detect --source=config.prod.yml --report-format=json --report-path=gitleaks-prod.json
+    - name: Run Gitleaks on config.prod.json
+      run: ./gitleaks detect --source=config.prod.json --report-format=json --report-path=gitleaks-prod.json
 
     - name: Create log.txt with results
       run: |
-        echo "🔍 **Checking config.dev.yml for sensitive data...**" > log.txt
+        echo "🔍 **Checking config.dev.json for sensitive data...**" > log.txt
         if [ -s gitleaks-dev.json ]; then
-          echo "❌ Gitleaks found issues in config.dev.yml" >> log.txt
+          echo "❌ Gitleaks found issues in config.dev.json" >> log.txt
         else
-          echo "✅ No issues found in config.dev.yml" >> log.txt
+          echo "✅ No issues found in config.dev.json" >> log.txt
         fi
-        echo "🔍 **Checking config.prod.yml for sensitive data...**" >> log.txt
+        echo "🔍 **Checking config.prod.json for sensitive data...**" >> log.txt
         if [ -s gitleaks-prod.json ]; then
-          echo "❌ Gitleaks found issues in config.prod.yml" >> log.txt
+          echo "❌ Gitleaks found issues in config.prod.json" >> log.txt
         else
-          echo "✅ No issues found in config.prod.yml" >> log.txt
+          echo "✅ No issues found in config.prod.json" >> log.txt
         fi
 
     - name: Add result as comment
