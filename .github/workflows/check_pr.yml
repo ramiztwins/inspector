@@ -1,4 +1,4 @@
-name: Check Pull Request
+name: Check and Validate Pull Request
 
 on:
   pull_request:
@@ -8,10 +8,9 @@ on:
 permissions:
   pull-requests: write
   contents: read
-  actions: write
 
 jobs:
-  check-changes:
+  check-and-validate:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,9 +32,38 @@ jobs:
           exit 1
         fi
 
-    - name: Trigger validation workflow
+    - name: Set up Go
       if: success()
-      uses: benc-uk/workflow-dispatch@v1
+      uses: actions/setup-go@v4
       with:
-        workflow: 'validate_config.yml'
-        ref: ${{ github.ref }}
+        go-version: '1.20'
+
+    - name: Set up Python
+      if: success()
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Generate JSON schema
+      if: success()
+      run: |
+        echo "🚀 Running Go code to generate schema.json..."
+        go run schema/schema.go
+
+    - name: Install check-jsonschema
+      if: success()
+      run: pip install check-jsonschema
+
+    - name: Validate config.prod.json
+      if: success()
+      run: |
+        echo "🔍 Validating config.prod.json against schema..."
+        check-jsonschema --schemafile=schema.json config.prod.json
+
+    - name: Add validation result as comment
+      if: success()
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        path: validation_output.txt
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
