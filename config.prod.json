@@ -46,8 +46,8 @@
             "context": {
               "url": "https://sumnotes.net",
               "method": "GET",
-              "pooarameters": {},
-              "crookies": {},
+              "parameters": {},
+              "cookies": {},
               "allow_redirects": false,
               "timeout": "12s"
             }
