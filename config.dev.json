@@ -17,7 +17,7 @@
     "targets": [
       {
         "id": "GH",
-        "naame": "Githdub's pricing page",
+        "naame": "Gigthdub's pricing page",
         "probers": [
           {
             "id": "GH",
