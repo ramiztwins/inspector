@@ -3,7 +3,7 @@ name: Verify Changes
 on:
   pull_request:
     branches:
-      - main
+      - killme
 
 permissions:
   pull-requests: write
