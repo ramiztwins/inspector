@@ -19,14 +19,14 @@ jobs:
         fetch-depth: 0
 
     - name: Run Gitleaks on config.dev.yml
-      uses: zricethezav/gitleaks-action@v2.2.2
+      uses: gitleaks/gitleaks-action@v2.3.4
       with:
-        config: config.dev.yml
+        args: detect --source=config.dev.yml --redact
 
     - name: Run Gitleaks on config.prod.yml
-      uses: zricethezav/gitleaks-action@v2.2.2
+      uses: gitleaks/gitleaks-action@v2.3.4
       with:
-        config: config.prod.yml
+        args: detect --source=config.prod.yml --redact
 
     - name: Add check result as comment
       if: always()
