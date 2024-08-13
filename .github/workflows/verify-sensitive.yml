@@ -18,28 +18,34 @@ jobs:
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
+
+    - name: Run Gitleaks on config files
+      uses: zricethezav/gitleaks-action@v1
+      with:
+        args: detect --source=. --redact
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
-    - name: Run Gitleaks on config.dev.yml
+    - name: Create sens.log.txt with results
       run: |
         echo "🔍 **Checking config.dev.yml for sensitive data...**" > sens.log.txt
-        gitleaks detect --source=config.dev.yml --redact >> sens.log.txt 2>&1 || echo "❌ Gitleaks found issues in config.dev.yml" >> sens.log.txt
-        echo "✅ No issues found in config.dev.yml" >> sens.log.txt
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Run Gitleaks on config.prod.yml
-      run: |
+        if grep -q "detector" ./gitleaks-report.json; then
+          echo "❌ Gitleaks found issues in config.dev.yml" >> sens.log.txt
+        else
+          echo "✅ No issues found in config.dev.yml" >> sens.log.txt
+        fi
         echo "🔍 **Checking config.prod.yml for sensitive data...**" >> sens.log.txt
-        gitleaks detect --source=config.prod.yml --redact >> sens.log.txt 2>&1 || echo "❌ Gitleaks found issues in config.prod.yml" >> sens.log.txt
-        echo "✅ No issues found in config.prod.yml" >> sens.log.txt
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if grep -q "detector" ./gitleaks-report.json; then
+          echo "❌ Gitleaks found issues in config.prod.yml" >> sens.log.txt
+        else
+          echo "✅ No issues found in config.prod.yml" >> sens.log.txt
+        fi
 
     - name: Add check result as comment
       if: always()
       uses: marocchino/sticky-pull-request-comment@v2
       with:
         path: sens.log.txt
-        header: sensitive
+        header: pull-request
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
