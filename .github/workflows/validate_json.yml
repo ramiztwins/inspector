@@ -19,69 +19,69 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Fetch all branches
-      run: git fetch --all
-
     - name: Prepare validation output file
       run: echo "" > validation_output.txt
 
-#    - name: Verify changes
-#      id: check_changes
-#      run: |
-#        echo "🔍 Checking modified files against main branch..."
-#        git diff --name-only origin/main > modified_files.txt
-#        cat modified_files.txt | tee -a validation_output.txt
-#
-#       if grep -qv '^config.prod.json$' modified_files.txt; then
-#          echo "  ❌ Changes detected outside config.prod.json!" | tee -a validation_output.txt
-#          exit 1
-#        else
-#          echo "  ✅ Only config.prod.json was modified." | tee -a validation_output.txt
-#        fi
+    # Uncomment this section if you want to verify specific changes
+    # - name: Verify changes
+    #   id: check_changes
+    #   run: |
+    #     echo "🔍 Checking modified files against main branch..."
+    #     git diff --name-only origin/main > modified_files.txt
+    #     cat modified_files.txt | tee -a validation_output.txt
+    #
+    #     if grep -qv '^config.prod.json$' modified_files.txt; then
+    #       echo "  ❌ Changes detected outside config.prod.json!" | tee -a validation_output.txt
+    #       exit 1
+    #     else
+    #       echo "  ✅ Only config.prod.json was modified." | tee -a validation_output.txt
+    #     fi
 
-    - name: Set up Go
+    - name: Set up Go and Python
       uses: actions/setup-go@v4
       with:
         go-version: '1.20'
-        
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
         
     - name: Generate JSON schema
       run: |
-        echo "🚀 Running Go code to generate schema.json..."
+        echo "🚀 **Running Go code to generate schema.json...**"
         if go run schema/schema.go; then
-          echo "  ✅ JSON schema generated successfully."
+          echo "  ✅ **JSON schema generated successfully.**" >> validation_output.txt
         else
-          echo "  ❌ Failed to generate JSON schema."
+          echo "  ❌ **Failed to generate JSON schema.**" >> validation_output.txt
           exit 1
         fi
-        echo -e "\n" >> validation_output.txt
 
     - name: Install check-jsonschema
       run: |
-        echo "📦 Installing check-jsonschema..."
-        if pip install check-jsonschema; then
-          echo "  ✅ check-jsonschema installed successfully."
-        else
-          echo "  ❌ Failed to install check-jsonschema."
-          exit 1
-        fi
+        echo "📦 **Installing check-jsonschema...**"
+        pip install check-jsonschema >> validation_output.txt 2>&1
         echo -e "\n" >> validation_output.txt
 
     - name: Validate config.prod.json
       run: |
-        echo "🔍 Validating config.prod.json against schema..."
+        echo "🔍 **Validating config.prod.json against schema...**"
         if check-jsonschema --schemafile=schema.json config.prod.json >> validation_output.txt 2>&1; then
-          sed -i '$d' validation_output.txt
-          echo "  ✅ Validation successful." | tee -a validation_output.txt
+          echo "  ✅ **Validation successful.**" >> validation_output.txt
         else
-          echo "  ❌ Validation failed." | tee -a validation_output.txt
+          echo "  ❌ **Validation failed.**" >> validation_output.txt
           exit 1
         fi
-        echo -e "\n" >> validation_output.txt
+
+    - name: Format Validation Output
+      run: |
+        echo "### Validation Results" >> validation_output.txt
+        echo -e "\n<details>\n<summary>Click to expand detailed results</summary>\n\n\`\`\`" >> validation_output.txt
+        cat validation_output.txt >> $GITHUB_STEP_SUMMARY
+        echo -e "\n\`\`\`\n</details>\n" >> validation_output.txt
+
+    - name: Create Job Summary with Beautified Output
+      run: |
+        echo "🔍 **Validation Summary**" >> $GITHUB_STEP_SUMMARY
+        cat validation_output.txt >> $GITHUB_STEP_SUMMARY
 
     - name: Add validation result as comment
       if: always()
