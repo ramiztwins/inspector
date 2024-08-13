@@ -71,15 +71,17 @@ jobs:
         fi
         echo -e "\n" >> validation_output.txt
 
-    - name: Run Gitleaks to check for sensitive data
+    - name: Install Gitleaks
       uses: gitleaks/gitleaks-action@v2
       with:
-        args: --config-path=gitleaks.toml --report-format=json --report-path=gitleaks_report.json
+        version: latest
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Process Gitleaks results
+    - name: Run Gitleaks to check for sensitive data
       run: |
+        echo "🔍 Running Gitleaks to detect sensitive data..."
+        gitleaks detect --config-path=gitleaks.toml --report-format=json --report-path=gitleaks_report.json
         if [ -f gitleaks_report.json ] && [ "$(jq .[0] < gitleaks_report.json)" != "null" ]; then
           echo "  ❌ Sensitive data detected!" | tee -a validation_output.txt
           cat gitleaks_report.json >> validation_output.txt
