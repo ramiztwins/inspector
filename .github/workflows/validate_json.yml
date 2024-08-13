@@ -71,17 +71,12 @@ jobs:
           exit 1
         fi
 
-    - name: Format Validation Output
-      run: |
-        echo "### Validation Results" >> validation_output.txt
-        echo -e "\n<details>\n<summary>Click to expand detailed results</summary>\n\n\`\`\`" >> validation_output.txt
-        cat validation_output.txt >> $GITHUB_STEP_SUMMARY
-        echo -e "\n\`\`\`\n</details>\n" >> validation_output.txt
-
     - name: Create Job Summary with Beautified Output
       run: |
-        echo "🔍 **Validation Summary**" >> $GITHUB_STEP_SUMMARY
+        echo -e "### Validation Results\n" >> $GITHUB_STEP_SUMMARY
+        echo -e "\n<details>\n<summary>Click to expand detailed results</summary>\n\n\`\`\`" >> $GITHUB_STEP_SUMMARY
         cat validation_output.txt >> $GITHUB_STEP_SUMMARY
+        echo -e "\n\`\`\`\n</details>\n" >> $GITHUB_STEP_SUMMARY
 
     - name: Add validation result as comment
       if: always()
