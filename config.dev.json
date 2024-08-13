@@ -17,7 +17,7 @@
     "targets": [
       {
         "id": "GH",
-        "name": "Github's pricing page",
+        "naame": "Github's pricing page",
         "probers": [
           {
             "id": "GH",
