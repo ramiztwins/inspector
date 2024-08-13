@@ -19,26 +19,21 @@ jobs:
       with:
         fetch-depth: 0  
 
-    - name: Verify only config.prod.json was changed
-      uses: dorny/paths-filter@v2
-      id: filter
-      with:
-        filters: |
-          config-prod:
-            - 'config.prod.json'
-          other-files:
-            - '*'
-            - '!config.prod.json'
-
-    - name: Fail if other files are changed
-      if: steps.filter.outputs.other-files == 'true'
+    - name: Verify changes
+      id: check_changes
       run: |
-        echo "❌ Changes detected outside config.prod.json!" 
-        echo "🛑 Only modifications to config.prod.json are allowed in this pull request."
-        exit 1
+        echo "🔍 Checking modified files..."
+        git diff --name-only ${{ github.event.before }} ${{ github.sha }} > modified_files.txt
+        cat modified_files.txt
+
+        if grep -qv '^config.prod.json$' modified_files.txt; then
+          echo "❌ Changes detected outside config.prod.json!" 
+          echo "🛑 Only modifications to config.prod.json are allowed in this pull request."
+          exit 1
+        fi
 
     - name: Trigger validation workflow
-      if: steps.filter.outputs.config-prod == 'true'
+      if: success()
       uses: actions/github-script@v6
       with:
         script: |
