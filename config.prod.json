@@ -49,7 +49,7 @@
               "parameters": {},
               "cookies": {},
               "allow_redirects": false,
-              "timeout": "6s"
+              "timeout": "12s"
             }
           }
         ]
