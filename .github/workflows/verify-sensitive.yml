@@ -19,7 +19,7 @@ jobs:
         fetch-depth: 0
     
     - name: Prepare log file
-      run: echo "" > log.txt
+      run: echo "" > logh.txt
       
     - name: Run Gitleaks on config.dev.yml
       run: |
