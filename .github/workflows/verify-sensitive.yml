@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
 
 jobs:
   check-sensitive-data:
@@ -18,20 +19,24 @@ jobs:
       with:
         fetch-depth: 0
     
+    - name: Install Gitleaks
+      run: |
+        curl -sSL https://git.io/gitleaks | bash
+    
     - name: Prepare log file
-      run: echo "" > logh.txt
+      run: echo "" > log.txt
       
     - name: Run Gitleaks on config.dev.yml
       run: |
         echo "🔍 **Checking config.dev.yml for sensitive data...**" > log.txt
-        gitleaks detect --source=config.dev.yml --redact >> log.txt 2>&1
+        ./gitleaks detect --source=config.dev.yml --redact >> log.txt 2>&1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Run Gitleaks on config.prod.yml
       run: |
         echo "🔍 **Checking config.prod.yml for sensitive data...**" >> log.txt
-        gitleaks detect --source=config.prod.yml --redact >> log.txt 2>&1
+        ./gitleaks detect --source=config.prod.yml --redact >> log.txt 2>&1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
