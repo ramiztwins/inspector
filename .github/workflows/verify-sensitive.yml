@@ -46,6 +46,7 @@ jobs:
       uses: marocchino/sticky-pull-request-comment@v2
       with:
         header: sensitive
+        append: true
         path: sens.log.txt
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

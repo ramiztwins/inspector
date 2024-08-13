@@ -42,7 +42,8 @@ jobs:
       if: always()
       uses: marocchino/sticky-pull-request-comment@v2
       with:
-        path: log.txt
         header: changes
+        append: true
+        path: log.txt
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
