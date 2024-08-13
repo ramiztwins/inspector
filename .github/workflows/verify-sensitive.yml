@@ -20,23 +20,21 @@ jobs:
         fetch-depth: 0
 
     - name: Run TruffleHog on config files
-      uses: trufflesecurity/trufflehog@v2
-      with:
-        scan: repo
-        format: json
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        pip install trufflehog
+        trufflehog filesystem --path=config.dev.yml --json > trufflehog-dev.json
+        trufflehog filesystem --path=config.prod.yml --json > trufflehog-prod.json
     
-    - name: Check config.dev.yml and config.prod.yml for sensitive data
+    - name: Create log.txt with results
       run: |
         echo "🔍 **Checking config.dev.yml for sensitive data...**" > log.txt
-        if grep -q "config.dev.yml" trufflehog.json; then
+        if [ -s trufflehog-dev.json ]; then
           echo "❌ TruffleHog found issues in config.dev.yml" >> log.txt
         else
           echo "✅ No issues found in config.dev.yml" >> log.txt
         fi
         echo "🔍 **Checking config.prod.yml for sensitive data...**" >> log.txt
-        if grep -q "config.prod.yml" trufflehog.json; then
+        if [ -s trufflehog-prod.json ]; then
           echo "❌ TruffleHog found issues in config.prod.yml" >> log.txt
         else
           echo "✅ No issues found in config.prod.yml" >> log.txt
