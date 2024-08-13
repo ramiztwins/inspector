@@ -36,6 +36,11 @@ jobs:
       with:
         python-version: '3.x'
 
+    - name: List files
+      run: |
+        echo "📂 Listing files in the current directory:"
+        ls -la
+
     - name: Generate JSON schema
       run: |
         echo "🚀 Running Go code to generate schema.json..."
@@ -60,6 +65,7 @@ jobs:
       run: |
         echo "🔍 Validating config files (.json) against schema..."
         check-jsonschema --schemafile=schema.json config.dev.json > validation_output.txt
+        echo "📝 Validation output:"
         cat validation_output.txt
         if [ $? -eq 0 ]; then
           echo "✅ Validation successful! The config files are correct. 🎉"
