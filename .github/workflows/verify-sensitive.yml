@@ -41,11 +41,12 @@ jobs:
           echo "✅ No issues found in config.prod.yml" >> sens.log.txt
         fi
 
-    - name: Add check result as comment
+    - name: Add result as comment
       if: always()
       uses: marocchino/sticky-pull-request-comment@v2
       with:
+        header: sensitive
         path: sens.log.txt
-        header: pull-request
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        

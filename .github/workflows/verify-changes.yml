@@ -44,6 +44,5 @@ jobs:
       with:
         path: log.txt
         header: changes
-        header: pull-request2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
