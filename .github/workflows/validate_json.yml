@@ -34,6 +34,7 @@ jobs:
 
         if grep -qv '^config.prod.json$' modified_files.txt; then
           echo "❌ Changes detected outside config.prod.json!" >> validation_output.txt
+          cat modified_files.txt >> validation_output.txt
           exit 1
         else
           echo "✅ Only config.prod.json was modified." >> validation_output.txt
