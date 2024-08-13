@@ -37,13 +37,15 @@ jobs:
     #       echo "  ✅ Only config.prod.json was modified." | tee -a validation_output.txt
     #     fi
 
-    - name: Set up Go and Python
+    - name: Set up Go
       uses: actions/setup-go@v4
       with:
         go-version: '1.20'
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
         
     - name: Generate JSON schema
       run: |
