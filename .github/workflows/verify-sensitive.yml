@@ -27,7 +27,7 @@ jobs:
 
     - name: Run TruffleHog on config files
       id: trufflehog_scan
-      run: ./trufflehog filesystem config.dev.json config.prod.json --json --fail > trufflehog-output.json || echo "Secrets found"
+      run: ./trufflehog filesystem config.dev.json config.prod.json --json --fail > trufflehog-output.json 
 
     - name: Analyze TruffleHog output
       run: |
