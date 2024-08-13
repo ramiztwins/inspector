@@ -19,8 +19,8 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Prepare validation output file
-      run: echo "" > validation_output.txt
+    - name: Prepare log file
+      run: echo "" > log.txt
 
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -46,15 +46,16 @@ jobs:
       run: |
         echo "📦 **Installing check-jsonschema...**"
         pip install check-jsonschema
-        echo -e "\n" >> validation_output.txt
+        echo -e "\n" >> log.txt
 
     - name: Validate config.prod.json
       run: |
         echo "🔍 **Validating config.prod.json against schema...**"
-        if check-jsonschema --schemafile=schema.json config.prod.json >> validation_output.txt 2>&1; then
-          echo "  ✅ **Config Validation successful.**" >> validation_output.txt
+        if check-jsonschema --schemafile=schema.json config.prod.json >> log.txt 2>&1; then
+          sed -i '$ d' log.txt
+          echo "  ✅ **Config Validation successful.**" >> log.txt
         else
-          echo "  ❌ **Config Validation failed.**" >> validation_output.txt
+          echo "  ❌ **Config Validation failed.**" >> log.txt
           exit 1
         fi
 
@@ -62,6 +63,6 @@ jobs:
       if: always()
       uses: marocchino/sticky-pull-request-comment@v2
       with:
-        path: validation_output.txt
+        path: log.txt
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
