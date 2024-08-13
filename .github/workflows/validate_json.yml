@@ -71,6 +71,17 @@ jobs:
         fi
         echo -e "\n" >> validation_output.txt
 
+    - name: Install Gitleaks
+      run: |
+        echo "📦 Installing Gitleaks..."
+        if curl -sSL https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks-linux-amd64 -o /usr/local/bin/gitleaks && chmod +x /usr/local/bin/gitleaks; then
+          echo "  ✅ Gitleaks installed successfully."
+        else
+          echo "  ❌ Failed to install Gitleaks."
+          exit 1
+        fi
+        echo -e "\n" >> validation_output.txt
+
     - name: Validate config.prod.json
       run: |
         echo "🔍 Validating config.prod.json against schema..."
