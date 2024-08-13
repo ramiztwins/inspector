@@ -17,7 +17,10 @@ jobs:
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
-
+    
+    - name: Prepare log file
+      run: echo "" > log.txt
+      
     - name: Run Gitleaks on config.dev.yml
       run: |
         echo "🔍 **Checking config.dev.yml for sensitive data...**" > log.txt
