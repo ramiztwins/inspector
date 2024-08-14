@@ -19,32 +19,6 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Cache Go modules
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.cache/go-build
-          /go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-
-    - name: Cache Python packages
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
-
-    - name: Cache JSON schema tool
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/pip-json-schema
-        key: ${{ runner.os }}-pip-json-schema-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-json-schema-
-
     - name: Prepare log file
       run: echo "" > log.md
 
@@ -57,7 +31,7 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.12'
-
+        
     - name: Generate JSON schema
       run: |
         echo "🚀 **Running Go code to generate schema.json...**"
@@ -93,3 +67,4 @@ jobs:
         path: log.md
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
