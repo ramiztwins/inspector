@@ -25,10 +25,13 @@ jobs:
           CHANGED_FILES=(${{ steps.changed-files.outputs.all_changed_files }})
           if [[ " ${CHANGED_FILES[*]} " =~ " config.prod.json " ]] && [[ ${#CHANGED_FILES[@]} -eq 1 ]]; then
             echo "VERIFICATION_MESSAGE=✅ Only config.prod.json was modified." >> $GITHUB_ENV
+            echo "LOG_CONTENT=### ✅ Verification Result\n\n**Only `config.prod.json` was modified.**" >> $GITHUB_ENV
           else
             echo "VERIFICATION_MESSAGE=❌ Changes detected in the following files:" >> $GITHUB_ENV
+            echo "LOG_CONTENT=### ❌ Verification Result\n\nThe following files were modified:\n" >> $GITHUB_ENV
             for file in "${CHANGED_FILES[@]}"; do
-              echo "MODIFIED_FILES=$file" >> $GITHUB_ENV
+              echo "- \`${file}\`" >> log.md
+              echo "LOG_CONTENT=- \`${file}\`" >> $GITHUB_ENV
             done
           fi
 
@@ -38,7 +41,6 @@ jobs:
           header: File Changes Verification
           recreate: false
           message: |
-            ${{ env.VERIFICATION_MESSAGE }}
-            ${{ env.MODIFIED_FILES }}
+            ${{ env.LOG_CONTENT }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
