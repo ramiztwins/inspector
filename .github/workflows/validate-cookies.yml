@@ -26,10 +26,10 @@ jobs:
         echo "### Cookies Encryption Validation - Started 🔍" > log.md
         all_encrypted=true
         for cookie in $cookies; do
-          cookie_name=$(echo $cookie | cut -d '=' -f 1)
+          cookie_key=$(echo $cookie | cut -d '=' -f 1)
           cookie_value=$(echo $cookie | cut -d '=' -f 2)
           if ! echo "$cookie_value" | grep -Eq '^[0-9a-fA-F]{32,}$'; then
-            echo "❌ Error: Unencrypted data found in cookie '$cookie_name' *" >> log.md
+            echo "$cookie_key: *" >> log.md
             all_encrypted=false
           fi
         done
