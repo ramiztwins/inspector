@@ -36,9 +36,9 @@ jobs:
       run: |
         echo "🚀 **Running Go code to generate schema.json...**"
         if go run schema/schema.go; then
-          echo "  ✅ **JSON schema generated successfully.**"
+          echo "✅ **JSON schema generated successfully.**"
         else
-          echo "  ❌ **Failed to generate JSON schema.**"
+          echo "❌ **Failed to generate JSON schema.**"
           exit 1
         fi
 
@@ -52,9 +52,9 @@ jobs:
       run: |
         echo "🔍 **Validating config.prod.json against schema...**" >> log.md
         if check-jsonschema --schemafile=schema.json config.prod.json >> log.md 2>&1; then
-          echo "  ✅ **Config Validation successful.**" > log.md
+          echo "###  Config validation result - Success ✅" > log.md
         else
-          echo "  ❌ **Config Validation failed.**" > log.md
+          echo "###  Config Validation failed - Failed ❌" > log.md
           exit 1
         fi
 
