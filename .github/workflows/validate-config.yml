@@ -52,9 +52,9 @@ jobs:
       run: |
         echo "🔍 **Validating config.prod.json against schema...**" >> log.md
         if check-jsonschema --schemafile=schema.json config.prod.json >> log.md 2>&1; then
-          echo "  ✅ **Config Validation successful.**" >> log.md
+          echo "  ✅ **Config Validation successful.**" > log.md
         else
-          echo "  ❌ **Config Validation failed.**" >> log.md
+          echo "  ❌ **Config Validation failed.**" > log.md
           exit 1
         fi
 
