@@ -24,23 +24,22 @@ jobs:
         run: |
           CHANGED_FILES=(${{ steps.changed-files.outputs.all_changed_files }})
           if [[ " ${CHANGED_FILES[*]} " =~ " config.prod.json " ]] && [[ ${#CHANGED_FILES[@]} -eq 1 ]]; then
-            echo "VERIFICATION_MESSAGE=✅ Only config.prod.json was modified." >> $GITHUB_ENV
-            echo "LOG_CONTENT=### ✅ Verification Result\n\n**Only `config.prod.json` was modified.**" >> $GITHUB_ENV
+            echo "### ✅ Verification Result" > log.md
+            echo "**Only `config.prod.json` was modified.**" >> log.md
           else
-            echo "VERIFICATION_MESSAGE=❌ Changes detected in the following files:" >> $GITHUB_ENV
-            echo "LOG_CONTENT=### ❌ Verification Result\n\nThe following files were modified:\n" >> $GITHUB_ENV
+            echo "### ❌ Verification Result" > log.md
+            echo "The following files were modified:" >> log.md
             for file in "${CHANGED_FILES[@]}"; do
               echo "- \`${file}\`" >> log.md
-              echo "LOG_CONTENT=- \`${file}\`" >> $GITHUB_ENV
             done
           fi
 
-      - name: Add verification result as comment
+      - name: Add verification result as comment from log.md
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: File Changes Verification
           recreate: false
           message: |
-            ${{ env.LOG_CONTENT }}
+            $(cat log.md)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
