@@ -20,10 +20,15 @@ jobs:
           CHANGED_FILES=$(git ls-files -m)
           if [[ "$CHANGED_FILES" == "config.prod.json" ]]; then
             echo "success=true" >> $GITHUB_ENV
-            echo "### Verification Result - Success ✅\n**Only \`config.prod.json\` was modified.**" > log.md
+            echo "### Verification Result - Success ✅" > log.md
+            echo "**Only \`config.prod.json\` was modified.**" >> log.md
           else
             echo "success=false" >> $GITHUB_ENV
-            echo "### Verification Result - Failed ❌\nThe following files were modified:\n$CHANGED_FILES" > log.md
+            echo "### Verification Result - Failed ❌" > log.md
+            echo "The following files were modified:" >> log.md
+            for file in $CHANGED_FILES; do
+              echo "- \`$file\`" >> log.md
+            done
           fi
 
       - name: Add verification result as comment
