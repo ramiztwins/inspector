@@ -15,15 +15,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: dorny/paths-filter@v1
-        id: filter
-        with:
-          filters: |
-            only-config:
-              - 'config.prod.json'
+      - name: Get list of changed files
+        id: get_changed_files
+        uses: tj-actions/changed-files@v37
 
       - name: Fail if other files are modified
-        if: ${{ steps.filter.outputs.only-config == 'false' }}
+        if: ${{ !contains(steps.get_changed_files.outputs.all_modified_files, 'config.prod.json') || steps.get_changed_files.outputs.all_modified_files != 'config.prod.json' }}
         run: exit 1
 
       - name: Add verification result as comment
@@ -31,6 +28,6 @@ jobs:
         with:
           header: changes
           recreate: false
-          message: ${{ steps.filter.outputs.only-config == 'true' && '✅ Only config.prod.json was modified.' || '❌ Changes detected outside config.prod.json!' }}
+          message: ${{ contains(steps.get_changed_files.outputs.all_modified_files, 'config.prod.json') && steps.get_changed_files.outputs.all_modified_files == 'config.prod.json' && '✅ Only config.prod.json was modified.' || '❌ Changes detected in the following files: ${{ steps.get_changed_files.outputs.all_modified_files }}' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
