@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Check if only config.prod.json was modified
         run: |
@@ -27,11 +27,11 @@ jobs:
           fi
 
       - name: Add verification result as comment
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v2.9.0
         with:
           header: File Changes Verification
           recreate: false
-          message: ${{ env.LOG_CONTENT }}
+          path: log.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
