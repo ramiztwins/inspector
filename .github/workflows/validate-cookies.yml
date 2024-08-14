@@ -17,29 +17,34 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Prepare log file
-      run: echo "" > log.md
+    - name: Parse and Validate Cookies
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const config = JSON.parse(fs.readFileSync('config.prod.json', 'utf8'));
 
-    - name: Check if cookies are encrypted
-      run: |
-        cookies=$(jq -r '.targets[].probers[].context.cookies | to_entries[] | "\(.key)=\(.value)"' config.prod.json)
-        echo "### Cookies Encryption Validation - Started 🔍" > log.md
-        all_encrypted=true
-        for cookie in $cookies; do
-          cookie_key=$(echo $cookie | cut -d '=' -f 1)
-          cookie_value=$(echo $cookie | cut -d '=' -f 2)
-          if ! echo "$cookie_value" | grep -Eq '^[0-9a-fA-F]{32,}$'; then
-            echo "$cookie_key: *" >> log.md
-            all_encrypted=false
-          fi
-        done
+          let failedCookies = [];
+          config.targets.forEach(target => {
+            target.probers.forEach(prober => {
+              for (const [key, value] of Object.entries(prober.context.cookies)) {
+                if (!/^[0-9a-fA-F]{32,}$/.test(value)) {
+                  failedCookies.push(`${key}: *`);
+                }
+              }
+            });
+          });
 
-        if $all_encrypted; then
-          sed -i '1s/.*/### Cookies Encryption Validation - Success ✅/' log.md
-        else
-          sed -i '1s/.*/### Cookies Encryption Validation - Failed ❌/' log.md
-          exit 1
-        fi
+          let logContent = '';
+          if (failedCookies.length > 0) {
+            logContent = '### Cookies Encryption Validation - Failed ❌\n\n';
+            logContent += failedCookies.join('\n');
+            core.setFailed(logContent);
+          } else {
+            logContent = '### Cookies Encryption Validation - Success ✅';
+          }
+
+          fs.writeFileSync('log.md', logContent);
 
     - name: Add validation result as comment
       if: always()
