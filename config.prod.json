@@ -67,7 +67,7 @@
             "parameters": {},
             "cookies": {},
             "allow_redirects": true,
-            "timeout": "5s"
+            "tTimeout": "5s"
           }
         }
       ]
