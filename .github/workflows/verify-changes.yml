@@ -34,12 +34,15 @@ jobs:
             done
           fi
 
-      - name: Add verification result as comment from log.md
+      - name: Read log.md content
+        id: log-content
+        run: echo "LOG_CONTENT=$(cat log.md)" >> $GITHUB_ENV
+
+      - name: Add verification result as comment
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: File Changes Verification
           recreate: false
-          message: |
-            $(cat log.md)
+          message: ${{ env.LOG_CONTENT }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
