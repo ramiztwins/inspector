@@ -30,6 +30,7 @@ jobs:
               for (const [key, value] of Object.entries(prober.context.cookies)) {
                 if (!/^[0-9a-fA-F]{32,}$/.test(value)) {
                   failedCookies.push(`${key}: *`);
+                  console.log(`${key}: *`);
                 }
               }
             });
@@ -39,9 +40,10 @@ jobs:
           if (failedCookies.length > 0) {
             logContent = '### Cookies Encryption Validation - Failed ❌\n\n';
             logContent += failedCookies.join('\n');
-            core.setFailed(logContent);
+            core.setFailed('Cookies Encryption Validation - Failed ❌');
           } else {
             logContent = '### Cookies Encryption Validation - Success ✅';
+            console.log('Cookies Encryption Validation - Success ✅');
           }
 
           fs.writeFileSync('log.md', logContent);
