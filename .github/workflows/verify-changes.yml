@@ -32,6 +32,7 @@ jobs:
             for file in "${CHANGED_FILES[@]}"; do
               echo "- \`${file}\`" >> log.md
             done
+            exit 1 
           fi
 
       - name: Read log.md content
@@ -46,8 +47,7 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: File Changes Verification
-          hide_and_recreate: true
-          hide_classify: "OUTDATED"
+          recreate: false
           message: ${{ env.LOG_CONTENT }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
