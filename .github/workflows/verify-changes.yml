@@ -15,34 +15,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Get all changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v44
-
       - name: Check if only config.prod.json was modified
-        id: check-only-config
         run: |
-          CHANGED_FILES=(${{ steps.changed-files.outputs.all_changed_files }})
-          if [[ " ${CHANGED_FILES[*]} " =~ " config.prod.json " ]] && [[ ${#CHANGED_FILES[@]} -eq 1 ]]; then
-            echo "### Verification Result - Success ✅" > log.md
-            echo "**Only \`config.prod.json\` was modified.**" >> log.md
+          CHANGED_FILES=$(git ls-files -m)
+          if [[ "$CHANGED_FILES" == "config.prod.json" ]]; then
             echo "success=true" >> $GITHUB_ENV
+            echo "### Verification Result - Success ✅\n**Only \`config.prod.json\` was modified.**" > log.md
           else
-            echo "### Verification Result - Failed ❌" > log.md
-            echo "The following files were modified:" >> log.md
-            for file in "${CHANGED_FILES[@]}"; do
-              echo "- \`${file}\`" >> log.md
-            done
             echo "success=false" >> $GITHUB_ENV
+            echo "### Verification Result - Failed ❌\nThe following files were modified:\n$CHANGED_FILES" > log.md
           fi
-
-      - name: Read log.md content
-        id: log-content
-        run: |
-          LOG_CONTENT=$(cat log.md)
-          echo "LOG_CONTENT<<EOF" >> $GITHUB_ENV
-          echo "$LOG_CONTENT" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
 
       - name: Add verification result as comment
         uses: marocchino/sticky-pull-request-comment@v2
@@ -56,5 +38,3 @@ jobs:
       - name: Fail the check if necessary
         if: env.success == 'false'
         run: exit 1
-
-        
