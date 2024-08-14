@@ -22,14 +22,14 @@ jobs:
       - name: Check if only config.prod.json was modified
         id: check-only-config
         run: |
-          CHANGED_FILES="${{ steps.changed-files.outputs.all_changed_files }}"
-          if [[ "$CHANGED_FILES" == "config.prod.json" ]]; then
-            echo "Only config.prod.json was modified"
+          CHANGED_FILES=(${{ steps.changed-files.outputs.all_changed_files }})
+          if [[ " ${CHANGED_FILES[*]} " =~ " config.prod.json " ]] && [[ ${#CHANGED_FILES[@]} -eq 1 ]]; then
             echo "VERIFICATION_MESSAGE=✅ Only config.prod.json was modified." >> $GITHUB_ENV
           else
-            echo "Other files were modified"
             echo "VERIFICATION_MESSAGE=❌ Changes detected in the following files:" >> $GITHUB_ENV
-            echo "MODIFIED_FILES=$(echo "$CHANGED_FILES" | tr ' ' '\n')" >> $GITHUB_ENV
+            for file in "${CHANGED_FILES[@]}"; do
+              echo "MODIFIED_FILES=$file" >> $GITHUB_ENV
+            done
           fi
 
       - name: Add verification result as comment
@@ -42,4 +42,3 @@ jobs:
             ${{ env.MODIFIED_FILES }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
