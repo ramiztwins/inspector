@@ -32,8 +32,7 @@ jobs:
             echo "message=✅ Only config.prod.json was modified." >> $GITHUB_ENV
           else
             echo "message=❌ Changes detected in the following files:" >> $GITHUB_ENV
-            echo "${{ steps.check_files.outputs.all_matched_files }}" | tr ' ' '\n' >> changed_files.txt
-            echo "files=$(cat changed_files.txt)" >> $GITHUB_ENV
+            echo "files=$(echo ${{ steps.check_files.outputs.all_matched_files }} | tr ' ' '\n')" >> $GITHUB_ENV
           fi
 
       - name: Add verification result as comment
