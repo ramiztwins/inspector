@@ -1,49 +1,36 @@
-name: Verify Changes
-
+name: "Check Pull Request Files"
 on:
   pull_request:
     branches:
-      - killme
+      - main
 
 permissions:
   pull-requests: write
   contents: read
 
 jobs:
-  verify-changes:
+  check_files:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
+      - uses: actions/checkout@v3
 
-    - name: Prepare log file
-      run: echo "" > log.txt
+      - uses: dorny/paths-filter@v1
+        id: filter
+        with:
+          filters: |
+            only-config:
+              - 'config.prod.json'
 
-    - name: Verify changes
-      id: check_changes
-      run: |
-        echo "🔍 Checking modified files against main branch..."
-        git diff --name-only origin/main > modified_files.txt
-        cat modified_files.txt | tee -a log.txt
-        
-        if grep -qv '^config.prod.json$' modified_files.txt; then
-          echo "❌ Changes detected outside config.prod.json!" | tee -a log.txt
-          echo "❌ Verification failed: Changes outside config.prod.json detected." | tee -a log.txt
-          exit 1
-        else
-          echo "✅ Only config.prod.json was modified." | tee -a log.txt
-          echo "✅ Verification successful: Only config.prod.json was modified." | tee -a log.txt
-        fi
+      - name: Fail if other files are modified
+        if: ${{ steps.filter.outputs.only-config == 'false' }}
+        run: exit 1
 
-    - name: Add verification result as comment
-      if: always()
-      uses: marocchino/sticky-pull-request-comment@v2
-      with:
-        header: changes
-        recreate: true
-        path: log.txt
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+      - name: Add verification result as comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: changes
+          recreate: false
+          message: ${{ steps.filter.outputs.only-config == 'true' && '✅ Only config.prod.json was modified.' || '❌ Changes detected outside config.prod.json!' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
