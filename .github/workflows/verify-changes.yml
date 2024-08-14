@@ -21,7 +21,12 @@ jobs:
 
       - name: Check if only config.prod.json was modified
         id: verify_files
-        run: echo "only_config_changed=$([[ '${{ steps.get_changed_files.outputs.all_modified_files }}' == 'config.prod.json' ]])" >> $GITHUB_ENV
+        run: |
+          if [[ "${{ steps.get_changed_files.outputs.all_modified_files }}" == "config.prod.json" ]]; then
+            echo "only_config_changed=true" >> $GITHUB_ENV
+          else
+            echo "only_config_changed=false" >> $GITHUB_ENV
+          fi
 
       - name: Add verification result as comment
         uses: marocchino/sticky-pull-request-comment@v2
@@ -29,10 +34,7 @@ jobs:
           header: changes
           recreate: false
           message: ${{ 
-            env.only_config_changed == 'true' 
-            && '✅ Only config.prod.json was modified.' 
-            || '❌ Changes detected in the following files: ' 
-            || steps.get_changed_files.outputs.all_modified_files 
+            env.only_config_changed == 'true'  && '✅ Only config.prod.json was modified.'  || '❌ Changes detected in the following files: '  || steps.get_changed_files.outputs.all_modified_files 
           }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
