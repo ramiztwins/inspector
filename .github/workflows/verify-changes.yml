@@ -26,13 +26,14 @@ jobs:
           if [[ " ${CHANGED_FILES[*]} " =~ " config.prod.json " ]] && [[ ${#CHANGED_FILES[@]} -eq 1 ]]; then
             echo "### Verification Result - Success ✅" > log.md
             echo "**Only \`config.prod.json\` was modified.**" >> log.md
+            echo "success=true" >> $GITHUB_ENV
           else
             echo "### Verification Result - Failed ❌" > log.md
             echo "The following files were modified:" >> log.md
             for file in "${CHANGED_FILES[@]}"; do
               echo "- \`${file}\`" >> log.md
             done
-            exit 1 
+            echo "success=false" >> $GITHUB_ENV
           fi
 
       - name: Read log.md content
@@ -51,3 +52,7 @@ jobs:
           message: ${{ env.LOG_CONTENT }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fail the check if necessary
+        if: env.success == 'false'
+        run: exit 1
