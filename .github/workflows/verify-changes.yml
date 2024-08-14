@@ -20,7 +20,9 @@ jobs:
         uses: tj-actions/changed-files@v37
 
       - name: Fail if other files are modified
-        if: ${{ !contains(steps.get_changed_files.outputs.all_modified_files, 'config.prod.json') || steps.get_changed_files.outputs.all_modified_files != 'config.prod.json' }}
+        if: ${{ 
+          steps.get_changed_files.outputs.all_modified_files != 'config.prod.json' 
+        }}
         run: exit 1
 
       - name: Add verification result as comment
@@ -28,6 +30,11 @@ jobs:
         with:
           header: changes
           recreate: false
-          message: ${{ contains(steps.get_changed_files.outputs.all_modified_files, 'config.prod.json') && steps.get_changed_files.outputs.all_modified_files == 'config.prod.json' && '✅ Only config.prod.json was modified.' || '❌ Changes detected in the following files: ${{ steps.get_changed_files.outputs.all_modified_files }}' }}
+          message: ${{ 
+            steps.get_changed_files.outputs.all_modified_files == 'config.prod.json' 
+            && '✅ Only config.prod.json was modified.' 
+            || '❌ Changes detected in the following files: ' 
+            || steps.get_changed_files.outputs.all_modified_files 
+          }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
