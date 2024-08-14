@@ -29,8 +29,8 @@ jobs:
             target.probers.forEach(prober => {
               for (const [key, value] of Object.entries(prober.context.cookies)) {
                 if (!/^[0-9a-fA-F]{32,}$/.test(value)) {
-                  failedCookies.push(`- \`${key}\`: *`);
-                  console.log(`${key}: *`);
+                  failedCookies.push(`- \`${key}\`: ***`);
+                  console.log(`${key}: ***`);
                 }
               }
             });
