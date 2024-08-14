@@ -3,7 +3,7 @@ name: Verify Sensitive Data
 on:
   pull_request:
     branches:
-      - main
+      - zhm
 
 permissions:
   contents: read
