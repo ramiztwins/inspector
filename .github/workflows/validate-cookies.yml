@@ -22,20 +22,22 @@ jobs:
 
     - name: Check if cookies are encrypted
       run: |
-        cookies=$(jq -r '.targets[].probers[].context.cookies | to_entries[] | .value' config.prod.json)
-        echo "🔍 **Validating cookies encryption...**" >> log.md
+        cookies=$(jq -r '.targets[].probers[].context.cookies | to_entries[] | "\(.key)=\(.value)"' config.prod.json)
+        echo "### Cookies Encryption Validation - Started 🔍" > log.md
         all_encrypted=true
         for cookie in $cookies; do
-          if ! echo "$cookie" | grep -Eq '^[0-9a-fA-F]{32,}$'; then
-            echo "❌ Error: Found unencrypted cookie: $cookie" >> log.md
+          cookie_name=$(echo $cookie | cut -d '=' -f 1)
+          cookie_value=$(echo $cookie | cut -d '=' -f 2)
+          if ! echo "$cookie_value" | grep -Eq '^[0-9a-fA-F]{32,}$'; then
+            echo "❌ Error: Unencrypted data found in cookie '$cookie_name' *" >> log.md
             all_encrypted=false
           fi
         done
 
         if $all_encrypted; then
-          echo "### Cookies Encryption Validation - Success ✅" >> log.md
+          sed -i '1s/.*/### Cookies Encryption Validation - Success ✅/' log.md
         else
-          echo "### Cookies Encryption Validation - Failed ❌" >> log.md
+          sed -i '1s/.*/### Cookies Encryption Validation - Failed ❌/' log.md
           exit 1
         fi
 
