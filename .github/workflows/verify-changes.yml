@@ -25,16 +25,26 @@ jobs:
             others:
               - '*'
 
+      - name: Format list of modified files
+        id: format_files
+        run: |
+          if [ "${{ steps.check_files.outputs.config }}" == 'true' ] && [ "${{ steps.check_files.outputs.others }}" == 'false' ]; then
+            echo "message=✅ Only config.prod.json was modified." >> $GITHUB_ENV
+          else
+            echo "message=❌ Changes detected in the following files:" >> $GITHUB_ENV
+            echo "files=$(echo ${{ steps.check_files.outputs.all_matched_files }} | tr '\n' ' ')" >> $GITHUB_ENV
+          fi
+
       - name: Add verification result as comment
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: changes
           recreate: false
-          message: |
-            ${{ 
-              steps.check_files.outputs.config == 'true' && steps.check_files.outputs.others == 'false' 
-            }} 
-            && '✅ Only config.prod.json was modified.' 
-            || '❌ Changes detected in other files.'
+          message: ${{ env.message }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add list of modified files (if applicable)
+        if: env.files != ''
+        run: |
+          echo "${{ env.files }}"
