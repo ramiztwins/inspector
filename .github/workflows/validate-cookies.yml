@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+permissions:
+  pull-requests: write
+  contents: read
+
 jobs:
   validate-cookies:
     runs-on: ubuntu-latest
@@ -13,13 +17,34 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Prepare log file
+      run: echo "" > log.md
+
     - name: Check if cookies are encrypted
       run: |
         cookies=$(jq -r '.targets[].probers[].context.cookies | to_entries[] | .value' config.prod.json)
+        echo "🔍 **Validating cookies encryption...**" >> log.md
+        all_encrypted=true
         for cookie in $cookies; do
           if ! echo "$cookie" | grep -Eq '^[0-9a-fA-F]{32,}$'; then
-            echo "Error: Found unencrypted cookie: $cookie"
-            exit 1
+            echo "❌ Error: Found unencrypted cookie: $cookie" >> log.md
+            all_encrypted=false
           fi
         done
-        echo "Success: All cookies are encrypted."
+
+        if $all_encrypted; then
+          echo "### Cookies Encryption Validation - Success ✅" >> log.md
+        else
+          echo "### Cookies Encryption Validation - Failed ❌" >> log.md
+          exit 1
+        fi
+
+    - name: Add validation result as comment
+      if: always()
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        header: "### Cookies Encryption Validation Result"
+        recreate: true
+        path: log.md
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
