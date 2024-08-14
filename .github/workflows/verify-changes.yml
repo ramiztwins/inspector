@@ -19,11 +19,9 @@ jobs:
         id: get_changed_files
         uses: tj-actions/changed-files@v37
 
-      - name: Fail if other files are modified
-        if: ${{ 
-          steps.get_changed_files.outputs.all_modified_files != 'config.prod.json' 
-        }}
-        run: exit 1
+      - name: Check if only config.prod.json was modified
+        id: verify_files
+        run: echo "only_config_changed=$([[ '${{ steps.get_changed_files.outputs.all_modified_files }}' == 'config.prod.json' ]])" >> $GITHUB_ENV
 
       - name: Add verification result as comment
         uses: marocchino/sticky-pull-request-comment@v2
@@ -31,7 +29,7 @@ jobs:
           header: changes
           recreate: false
           message: ${{ 
-            steps.get_changed_files.outputs.all_modified_files == 'config.prod.json' 
+            env.only_config_changed == 'true' 
             && '✅ Only config.prod.json was modified.' 
             || '❌ Changes detected in the following files: ' 
             || steps.get_changed_files.outputs.all_modified_files 
