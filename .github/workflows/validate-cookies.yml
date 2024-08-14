@@ -15,7 +15,7 @@ jobs:
 
     - name: Check if cookies are encrypted
       run: |
-        cookies=$(jq -r '.targets[].probers[].context.cookies | to_entries[] | .value' test.json)
+        cookies=$(jq -r '.targets[].probers[].context.cookies | to_entries[] | .value' config.prod.json)
         for cookie in $cookies; do
           if ! echo "$cookie" | grep -Eq '^[0-9a-fA-F]{32,}$'; then
             echo "Error: Found unencrypted cookie: $cookie"
