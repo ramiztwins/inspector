@@ -3,7 +3,7 @@ name: Validate Config
 on:
   pull_request:
     branches:
-      - zhm
+      - main
 
 permissions:
   pull-requests: write
@@ -20,41 +20,41 @@ jobs:
         fetch-depth: 0
 
     - name: Prepare log file
-      run: echo "" > log.txt
+      run: echo "" > log.md
 
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version: '1.20'
+        go-version: '1.23.0'
 
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.x'
+        python-version: '3.12'
         
     - name: Generate JSON schema
       run: |
         echo "🚀 **Running Go code to generate schema.json...**"
         if go run schema/schema.go; then
-          echo "  ✅ **JSON schema generated successfully.**"
+          echo "  ✅ **JSON schema generated successfully.**" >> log.md
         else
-          echo "  ❌ **Failed to generate JSON schema.**"
+          echo "  ❌ **Failed to generate JSON schema.**" >> log.md
           exit 1
         fi
 
     - name: Install check-jsonschema
       run: |
-        echo "📦 **Installing check-jsonschema...**"
+        echo "📦 **Installing check-jsonschema...**" >> log.md
         pip install check-jsonschema
-        echo -e "\n" >> log.txt
+        echo -e "\n" >> log.md
 
     - name: Validate config.prod.json
       run: |
-        echo "🔍 **Validating config.prod.json against schema...**"
-        if check-jsonschema --schemafile=schema.json config.prod.json >> log.txt 2>&1; then
-          echo "  ✅ **Config Validation successful.**" > log.txt
+        echo "🔍 **Validating config.prod.json against schema...**" >> log.md
+        if check-jsonschema --schemafile=schema.json config.prod.json >> log.md 2>&1; then
+          echo "  ✅ **Config Validation successful.**" >> log.md
         else
-          echo "  ❌ **Config Validation failed.**" > log.txt
+          echo "  ❌ **Config Validation failed.**" >> log.md
           exit 1
         fi
 
@@ -62,8 +62,8 @@ jobs:
       if: always()
       uses: marocchino/sticky-pull-request-comment@v2
       with:
-        header: config
+        header: "### Config Validation Result"
         recreate: false
-        path: log.txt
+        path: log.md
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
