@@ -24,12 +24,10 @@ jobs:
           CHANGED_FILES="${{ steps.changed-files.outputs.all_changed_files }}"
           if [[ "$CHANGED_FILES" == "config.prod.json" ]]; then
             echo "success=true" >> $GITHUB_ENV
-            echo "### Verification Result - Success ✅" > log.md
-            echo "**Only \`config.prod.json\` was modified.**" >> log.md
+            echo "### Verification Result - Success ✅" > log.md && echo "**Only \`config.prod.json\` was modified.**" >> log.md
           else
             echo "success=false" >> $GITHUB_ENV
-            echo "### Verification Result - Failed ❌" > log.md
-            echo "The following files were modified:" >> log.md
+            echo "### Verification Result - Failed ❌" > log.md && echo "The following files were modified:" >> log.md
             for file in $CHANGED_FILES; do
               echo "- \`$file\`" >> log.md
             done
