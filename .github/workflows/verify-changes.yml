@@ -46,7 +46,8 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: File Changes Verification
-          recreate: false
+          hide_and_recreate: true
+          hide_classify: "OUTDATED"
           message: ${{ env.LOG_CONTENT }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
