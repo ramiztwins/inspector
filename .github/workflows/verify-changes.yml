@@ -19,7 +19,7 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v44.5.7
         with:
-          fetch-depth: 0
+          base: main
 
       - name: Check if only config.prod.json was modified
         run: |
