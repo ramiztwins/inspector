@@ -30,8 +30,11 @@ jobs:
         with:
           header: changes
           recreate: false
-          message: ${{ 
-            steps.check_files.outputs.config == 'true' && steps.check_files.outputs.others == 'false' && '✅ Only config.prod.json was modified.' || '❌ Changes detected in other files.'
-          }}
+          message: |
+            ${{ 
+              steps.check_files.outputs.config == 'true' && steps.check_files.outputs.others == 'false' 
+            }} 
+            && '✅ Only config.prod.json was modified.' 
+            || '❌ Changes detected in other files.'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
