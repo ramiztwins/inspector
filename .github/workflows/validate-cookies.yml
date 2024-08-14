@@ -1,3 +1,10 @@
+name: Validate Cookies Encryption
+
+on:
+  pull_request:
+    branches:
+      - main
+
 jobs:
   validate-cookies:
     runs-on: ubuntu-latest
@@ -5,9 +12,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
-    - name: Setup jq
-      uses: actions/setup-jq-action@v1
 
     - name: Check if cookies are encrypted
       run: |
