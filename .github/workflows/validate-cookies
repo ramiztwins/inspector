@@ -1,0 +1,28 @@
+name: Verify Cookies Encryption
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate-cookies:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup jq
+      uses: chrisrmiller/action-jq@v1
+
+    - name: Check if cookies are encrypted
+      run: |
+        cookies=$(jq -r '.targets[].probers[].context.cookies | to_entries[] | .value' test.json)
+        for cookie in $cookies; do
+          if ! echo "$cookie" | grep -Eq '^[0-9a-fA-F]{32,}$'; then
+            echo "Error: Found unencrypted cookie: $cookie"
+            exit 1
+          fi
+        done
+        echo "Success: All cookies are encrypted."
