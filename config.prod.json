@@ -28,11 +28,7 @@
               "param2": "bar"
             },
             "cookies": {
-              "os": "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda3",
-              "name": "a3f5b2e7d8c9f4a1b2c3d4e5f6a7b8c9",
-              "111": "i am unsecure data",
-              "222": "hu",
-              "333": "insecuredata"
+              "name": "myname"
             },
             "allow_redirects": false,
             "timeout": "6s"
