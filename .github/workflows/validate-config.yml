@@ -36,15 +36,15 @@ jobs:
       run: |
         echo "🚀 **Running Go code to generate schema.json...**"
         if go run schema/schema.go; then
-          echo "  ✅ **JSON schema generated successfully.**" >> log.md
+          echo "  ✅ **JSON schema generated successfully.**"
         else
-          echo "  ❌ **Failed to generate JSON schema.**" >> log.md
+          echo "  ❌ **Failed to generate JSON schema.**"
           exit 1
         fi
 
     - name: Install check-jsonschema
       run: |
-        echo "📦 **Installing check-jsonschema...**" >> log.md
+        echo "📦 **Installing check-jsonschema...**"
         pip install check-jsonschema
         echo -e "\n" >> log.md
 
