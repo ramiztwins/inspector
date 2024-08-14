@@ -54,7 +54,7 @@ jobs:
         if check-jsonschema --schemafile=schema.json config.prod.json >> log.md 2>&1; then
           echo "###  Config validation result - Success ✅" > log.md
         else
-          echo "###  Config Validation failed - Failed ❌" >> log.md
+          sed -i '1i### Config Validation failed - Failed ❌' log.md
           exit 1
         fi
 
