@@ -64,15 +64,16 @@ func main() {
 	 * by probers. Collected metrics are pushed out to the currently configured metrics database.
 	 */
 	go func() {
+		ticker := time.NewTicker(METRIC_CHANNEL_POLL_INTERVAL)
+		defer ticker.Stop()
 		for {
 			select {
 			case m := <-metricsChannel:
 				m.Tags["region"] = c.Inspector.Region
 				mdb.CollectMetrics(m)
-			default:
-				mylogger.MainLogger.Infof("Metrics channel is empty. Waiting some more...")
-				time.Sleep(METRIC_CHANNEL_POLL_INTERVAL)
-				mdb.EmitMultiple() 
+			case <-ticker.C:
+				mylogger.MainLogger.Infof("Metrics channel is empty. Emitting metrics...")
+				mdb.EmitMultiple()
 			}
 		}
 	}()
