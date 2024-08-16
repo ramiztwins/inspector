@@ -38,12 +38,12 @@ jobs:
 
           let logContent = '';
           if (failedCookies.length > 0) {
-            logContent = '### Cookies Encryption Validation - Failed ❌\n\n';
+            logContent = '### Cookies Encryption Validation result - Failed ❌\n\n';
             logContent += failedCookies.join('\n');
-            core.setFailed('Cookies Encryption Validation - Failed ❌');
+            core.setFailed('Cookies Encryption Validation result - Failed ❌');
           } else {
-            logContent = '### Cookies Encryption Validation - Success ✅';
-            console.log('Cookies Encryption Validation - Success ✅');
+            logContent = '### Cookies Encryption Validation result - Success ✅';
+            console.log('Cookies Encryption Validation result - Success ✅');
           }
 
           fs.writeFileSync('log.md', logContent);
