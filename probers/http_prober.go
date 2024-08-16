@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
+	"strings"
 	"time"
 )
 
@@ -107,11 +108,17 @@ func (httpProber *HTTPProber) RunOnce(c chan metrics.SingleMetric) error {
 		params.Add(name, value)
 	}
 	baseURL, _ := url.Parse(httpProber.Url)
-	baseURL.RawQuery = params.Encode()
 
 	if httpProber.Method == "GET" {
 		start = time.Now()
+		baseURL.RawQuery = params.Encode()
 		response, err = httpProber.client.Get(baseURL.String())
+		if err != nil {
+			return err
+		}
+	} else if httpProber.Method == "POST" {
+		start = time.Now()
+		response, err = httpProber.client.Post(baseURL.String(), "application/x-www-form-urlencoded", strings.NewReader(params.Encode()))
 		if err != nil {
 			return err
 		}
