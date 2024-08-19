@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 services:
   inspector-influxdb:
     image: influxdb:1.8
@@ -23,6 +23,8 @@ services:
       - inspector-influxdb
     volumes:
       - .:/export
+    secrets:
+      - private_key
 
 networks:
   inspectornet:
@@ -32,3 +34,7 @@ networks:
 volumes:
   influx-data:
     name: influx-data
+
+secrets:
+  private_key:
+    file: private.pem

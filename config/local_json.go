@@ -85,5 +85,13 @@ func NewConfig(path string) (*Config, error) {
 		mylogger.MainLogger.Errorf("Failed parsing config at path: %s with error: %s", path, err)
 		return nil, err
 	}
+
+    // Decrypt fields that were encrypted by the user. Currently this is the only function responsible for decrypting the entire JSON.
+	err = DecryptConfig(&data)
+	if err != nil {
+		mylogger.MainLogger.Errorf("Failed to decrypt config data: %s", err)
+		return nil, err
+	}
+
 	return &data, err
 }

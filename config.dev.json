@@ -1,60 +1,73 @@
 {
-    "inspector": {
-      "region": "west-coast"
-    },
-    "metrics_db": [
-      {
-        "influxdb": {
-          "database_url": "inspector-influxdb",
-          "port": 8086,
-          "database_name": "inspector"
-        }
+  "inspector": {
+    "region": "west-coast"
+  },
+  "metrics_db": [
+    {
+      "influxdb": {
+        "database_url": "inspector-influxdb",
+        "port": 8086,
+        "database_name": "inspector"
       }
-    ],
-    "target_assignments": {
-      "list": ["GH", "Sumnotes"]
-    },
-    "targets": [
-      {
-        "id": "GH",
-        "name": "Github's pricing page",
-        "probers": [
-          {
-            "id": "GH",
-            "name": "basic_http_prober",
-            "context": {
-              "url": "https://github.com/pricing",
-              "method": "GET",
-              "parameters": {
-                "param1": "foo",
-                "param2": "bar"
-              },
-              "cookies": {
-                "name": "value"
-              },
-              "allow_redirects": false,
-              "timeout": "6s"
-            }
-          }
-        ]
-      },
-      {
-        "id": "Sumnotes",
-        "name": "Sumnotes",
-        "probers": [
-          {
-            "id": "Sumnotes",
-            "name": "basic_http_prober",
-            "context": {
-              "url": "https://sumnotes.net",
-              "method": "GET",
-              "parameters": {},
-              "cookies": {},
-              "allow_redirects": false,
-              "timeout": "6s"
-            }
-          }
-        ]
-      }
+    }
+  ],
+  "target_assignments": {
+    "list": [
+      "GH",
+      "Sumnotes"
     ]
-  }  
+  },
+  "targets": [
+    {
+      "id": "GH",
+      "name": "Github's pricing page",
+      "probers": [
+        {
+          "id": "GH",
+          "name": "basic_http_prober",
+          "context": {
+            "url": "https://github.com/pricing",
+            "method": "GET",
+            "parameters": {
+              "param1": "foo",
+              "param2": "bar"
+            },
+            "cookies": {
+              "session_id": "H1Gq5VnVdMxL/KKkWVtdUeiIGx4B/2rxaAKoqH9nZ0gEiBBjwf1Bn65aJdAw9d2v44rLUwE7tlfHLifFkJ78Q3m/a3dVj8SyoksKmyJm7IpKAY93q2y8B8NpkeNdEzdw24VvwkzwHX1iOGO08y+I11e5KkClmaqL3WDu04etwxQaL4OuTrwqrLJg43aEXP09jCZ9krxNW0BYul5tIwimpN5Dmyv+3ERN+Zc+fEGBOlfoRPFWrxJGMPdHkS+5arCmbaLsq9bxEWgW2yheLcApgEw8oOJ4SVKkNQqLyAdDS2ZXCwUVnMe+FNRsUkj6taH8Qbj9gYpMtyrqrVX5k/s8tA==",
+              "auth_token": "qClfZkgLTHfO9NQoB6W67ol5orSb1OnSTSpRbPrwjZTFhxg7I3IBgIBOKBFau8d9OFw+m7/tO1TtnMSDLuO1mD7K2SRp8EN4pTkl22T2d9FDplTQ3UdSUy3ZjtbAXccCWFzC8VCenEHHtiCTtz9dlwpjACcaOVcE8hWiB1GAtnlr4pAW3Gq4is0mpTUhVPwk0xtavo4ar+6QipaYML4t3xfm1ZsHSutq+Mrh7tILNIrUSzUfXNrvpDYQzic9Vzsp8HKGtBrEHcUFOPznxCmRwEqOYATwvxNbD4f8tgEt9WHER1jEyyDealkaU0+e9eMy+PLvv06g1g4heBhcBa4bsw==",
+              "user_preferences": "agctBadohbyOCPQQyEOPJ84Aj94k0smaIrVFQQ0gKPAF+ttmFr3KrlWK7v2OkvnJfTUpYhJNf8y1qc3yujc0RbzId+u7Js8DpFERjp/FbUMN2VqAsFsmRXFcoiEO9AO59BBs6TRzm4ssU5Lyrcn7hGw7QQLs7d/BdE/KmE56kqa14c6I9r1lKR6Ph7QmscrPC2ThSaknF9lfm2JsYinPqmQ8MIO/8cwbiC0iavynuR//Xas7LhddMW/82sppeHNUXp5I31fgw+fA0Mz2X8CpM0mY9di/IFZ+afvR8jS5vhjT1gU/6OtK9Yf6F3Gpr4aH3h72+53vditYyDJ3CbExjw==",
+              "tracking_id": "ezFkcGY7OJh8mchNrsUTYCFtM6ZBbmBltC8j28dAI+Dmy8QMTHEsTVZV2YneRHcM16/qKiXMDps6tZaXcBxg139V0Rpd7Pge60Vj1yNmQliPROi5gh9SS+FTMntRpKyaJWk0ebD5u/FgVfBVd6+a/dOcjyy3Vlvf13xkaDU5I4dEobOkP0+ZPsFvWoVIEXQEGy/EDApGc2Q3f9puFUvMZeQbcuZp8GQPuNytZSbWyRisCrkmTlPkd9vjLRYHUqe27I8GcQDFpKGj+cQhzQQf2MUn5InpyCaA3rdDqnVvaJmRouhInRHqmoGVsXxZ2DSwqS5Wpupt20CH7fcBEy35qg==",
+              "experiment_group": "JCsD8SY8cMpoD+FyAsV9Yvke0M35zB/2oN5xxeBLNuGIi7vSjt+AVbEX9TZZkouVrnS0bdM8GOniMNfOEYepBa3YXLgyAZ04ild9bqyTUq2FK9T8JqUrwX0V6XaCkfbaWv6H3NpV/kRYui0yxAdIpCun0/5Xpr4Ueuh9AzPQYnGlJQSdSwfTA+bLZ9LvGtALsGmdj+Jq/uiQkzXUsXapWzDSU2c4eP7lVE0ys+SUBWi0OcmNtZ7Uer7O+XnEuVZl8PztIaasD3urRwkT7GQvKqLCZthpivKVX7gT4EfVID8KzaTPJPgnpOyzA5UkQvr75xGVaHQSIom6Wcz2WPm5Vg=="
+            },
+            "allow_redirects": false,
+            "timeout": "6s"
+          }
+        }
+      ]
+    },
+    {
+      "id": "Sumnotes",
+      "name": "Sumnotes",
+      "probers": [
+        {
+          "id": "Sumnotes",
+          "name": "basic_http_prober",
+          "context": {
+            "url": "https://sumnotes.net",
+            "method": "GET",
+            "parameters": {},
+            "cookies": {
+              "session_id": "YVpUFOCN+oTDgvZ81efRd42s+6P2h3eWjg+jQMvv3vAVoCqnC0HfN5rL442Y4ky9uCgISBtoeo3j/7xb9goN6OdbsSvoyxRM5VJZ5hq1C+ZJa5VR+ky47wdbucPWXDK1Dtn7zDeKAwFhjbXq0z+HyjUB7U4aIhjc0CkIHXodlGfjGyr/YyLlkulx3Xxe5N5w3YscnbRB4PRUA+gR0ZzWtXPc8YxsD3jtl5f4BDikdO/g0B+srkDg/ncuT7v6WKPXspEO0bBcsPDFgc1h5dYyCO5tWRin1+6yUoVsvVIpZ3Kj4Dg+3ecD2OO0ex6iGVkpQNePi3uiCj0S+Eyg76U6zA==",
+              "auth_token": "FRm9vcusgtlVWO/3KVg6SG+ATGM/Tp27Xqa5Mk2oUfKQPg4Q5y7ZPO7sn2dSBfMIgIy6UiE2HPNQRsSPNOt3rKouYrPeIETtphpMzRABXfPTg3i80nTIFJseG6MLsFt/e33o7iHMoBDoWgX7rlX7KxxIf5vfiizFS2Q+a0s7IrUBLUO8LZ4GcYnhVJ2YG8O366x+hfNC9KizNVqUNQGhEBxVpTWxcWPpD5U2rF3CpVfyw5TmTKG0G5FQ1aGQhp1K+gS4GvRce7IPL8aa4QcVRUnvSJElQtWebqGK24geBoQwqeR75a9EjKEnOPV7IhUaSrB5Ie7OoxyYVZKFEXdTug==",
+              "user_preferences": "UAQijto5132eqgXoH8ocwITx6dwy3Hy+c95ar705irtjC8pmS+R3dNPboPamNJ+dQ9Bz0WZVrhcgY8u4FM4Itqj2L0ECw1dye8H601zYgCOnDTcYMhAsZzlujtN5RUz3Ht9YFUiu88ZBE3Ox3kiSkPiL9DGkREpEUVYbxKE+1NLL9Id+Kha4d/LI7A7btqnsuaiVlm0MicSddRzoyoIesvJUtV3wcT4Lg2s+HUKAyfTjlpZDayyhZq9ykYYm+mgPd0dJjyak1Qs1qbIZ6rhvq2Fl4JdDENC7MayvfpFAN1QqwAkAIbjOuq5B+VC319d0T7qnMzmnqmXzHMEK31ZVpw==",
+              "tracking_id": "G7XICQVfGayt3hR7rUXYcyNFnCn3YLv6gO287ZhTmkRqaX2gche2zoYfW1lCst3gQ6MpkjTH1/pH4cbD6GJIdmZeus4/nSVAobwp0fkHC/ZK7wdk0GRcPd5Kmg/QUlIZVL+k1EXJpmg33S0/XlC52/TJV7425u8IumAaHBo0W6uW+ORAPezsaTFlwRw9ljCP8R7E7F3OXb+GqwuNhvn/og/Md8zxcMWdB3CNz+E5tWT7nVQuzHF+9Hw6Abf2QyuNi2RAZh6i0RupW9uvPy8ix3sRFaynWtKpMe+1+YPiwapEvEY+fHamuiCl+2KNQdS3oyigdPvwLkJl+EdDaqVtlw==",
+              "experiment_group": "GeCb5KDdKHeFbRT0ws+0e3c5ww7ocF2LdaQMyyFi/2kmkI4f7azuhKgHG19lKxBARgRNvOKlD8QQyV4czmAZgaua/OZBE5ezko009NtV2EnC8iY+D62832qNISQBkiUlzZ8LsLp/ypq+aLvuKxScbKu6SxYwuHcgJWaMiNtIX1vz//d0JyuHKSBL/TYKG+0DWMmQT0GNZvJ/Qn0oWar78IJyHSu7PDD5aXfWY/PoAlr5txjyT+QDl8aHjYkrlimTEl7FOW0qOx3a4kaIa1pGuf+Pa8xz2H1pDm0Nc9waVuFqCtHAWpythxQD5KiJr1FWiG34qWBN4YBeogXaR0TRzw=="
+            },
+            "allow_redirects": false,
+            "timeout": "6s"
+          }
+        }
+      ]
+    }
+  ]
+}
