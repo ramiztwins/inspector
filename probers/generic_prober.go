@@ -41,7 +41,6 @@ func NewProber(c config.ProberSubConfig) (Prober, error) {
 			AllowRedirects: c.Context.AllowRedirects,
 			Timeout:        c.Context.Timeout,
 		}
-		break
 	default:
 		return nil, fmt.Errorf("unsupported prober type: %s", c.Name)
 	}

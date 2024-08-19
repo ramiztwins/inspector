@@ -41,7 +41,7 @@ func NewMetricsDB(c config.MetricsDBSubConfig) (MetricsDB, error) {
 		}
 	} else {
 		mylogger.MainLogger.Errorf("Specified metrics database is not supported in config: %v", c)
-		return nil, fmt.Errorf("MetricsDB defiend in configuration is not supported: %s", c)
+		return nil, fmt.Errorf("MetricsDB defiend in configuration is not supported: %v", c)
 	}
 	return mdb, nil
 }
