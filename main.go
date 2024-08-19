@@ -28,7 +28,7 @@ func main() {
 	if *logFilePath != "" {
 		logFile, err := os.OpenFile(*logFilePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0660)
 		if err != nil {
-			glogger.Fatalf("Failed to open log file path: %s, error: %s", logFilePath, err)
+			glogger.Fatalf("Failed to open log file path: %s, error: %s", *logFilePath, err)
 		}
 		defer logFile.Close()
 		mylogger.MainLogger = glogger.Init("InspectorLogger", false, true, logFile)
