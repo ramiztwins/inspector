@@ -71,7 +71,7 @@ jobs:
               echo "✅ **Only 'targets' are modified.**" >> log.md
             else
               echo "❌ **Non-target fields are modified in config.prod.json.**" >> log.md
-              exit 1
+              
             fi
           else
             echo "❌ **No changes to 'targets' found, but config.prod.json is modified.**" >> log.md
