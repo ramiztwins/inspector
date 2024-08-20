@@ -71,6 +71,24 @@
           }
         }
       ]
+    },
+    {
+      "id": "Aobu313",
+      "name": "Google's home page",
+      "probers": [
+        {
+          "id": "Google",
+          "name": "basic_http_prober",
+          "context": {
+            "url": "https://www.google.com",
+            "method": "GET",
+            "parameters": {},
+            "cookies": {},
+            "allow_redirects": true,
+            "timeout": "5s"
+          }
+        }
+      ]
     }
   ]
 }
