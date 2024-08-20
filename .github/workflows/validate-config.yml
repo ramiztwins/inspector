@@ -58,6 +58,35 @@ jobs:
           exit 1
         fi
 
+    - name: Check if only targets are modified
+      run: |
+        echo "🔍 **Checking that only 'targets' are modified...**" >> log.md
+        if git diff main...HEAD --name-only | grep -q "config.prod.json"; then
+          if git diff main...HEAD config.prod.json | grep -q '"targets"'; then
+            if ! git diff main...HEAD config.prod.json | grep -qv '"targets"'; then
+              echo "✅ **Only 'targets' are modified.**" >> log.md
+            else
+              echo "❌ **Non-target fields are modified in config.prod.json.**" >> log.md
+              exit 1
+            fi
+          else
+            echo "❌ **No changes to 'targets' found, but config.prod.json is modified.**" >> log.md
+            exit 1
+          fi
+        else
+          echo "✅ **No changes to config.prod.json.**" >> log.md
+        fi
+
+    - name: Log modified target IDs
+      run: |
+        echo "🔍 **Extracting modified target IDs...**" >> log.md
+        modified_ids=$(git diff main...HEAD config.prod.json | grep '"id"' | awk -F: '{print $2}' | sed 's/[",]//g' | tr -d ' ' | tr '\n' ',' | sed 's/,$//')
+        if [ -n "$modified_ids" ]; then
+          echo "Modified Target IDs: $modified_ids" >> log.md
+        else
+          echo "No Target IDs were modified." >> log.md
+        fi
+
     - name: Add validation result as comment
       if: always()
       uses: marocchino/sticky-pull-request-comment@v2
@@ -67,4 +96,4 @@ jobs:
         path: log.md
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
+
