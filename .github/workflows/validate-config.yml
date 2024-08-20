@@ -71,11 +71,9 @@ jobs:
               echo "✅ **Only 'targets' are modified.**" >> log.md
             else
               echo "❌ **Non-target fields are modified in config.prod.json.**" >> log.md
-              
             fi
           else
             echo "❌ **No changes to 'targets' found, but config.prod.json is modified.**" >> log.md
-            
           fi
         else
           echo "✅ **No changes to config.prod.json.**" >> log.md
@@ -84,11 +82,11 @@ jobs:
     - name: Log modified target IDs
       run: |
         echo "🔍 **Extracting modified target IDs...**" >> log.md
-        modified_ids=$(git diff origin/main...HEAD config.prod.json | grep '"id"' | awk -F: '{print $2}' | sed 's/[",]//g' | tr -d ' ' | tr '\n' ',' | sed 's/,$//')
+        modified_ids=$(git diff origin/main...HEAD config.prod.json | grep -E '^\+.*"id"' | awk -F: '{print $2}' | sed 's/[",]//g' | tr -d ' ' | tr '\n' ',' | sed 's/,$//')
         if [ -n "$modified_ids" ]; then
-          echo "Modified Target IDs: $modified_ids" >> log.md
+          echo "Modified or New Target IDs: $modified_ids" >> log.md
         else
-          echo "No Target IDs were modified." >> log.md
+          echo "No Target IDs were modified or added." >> log.md
         fi
 
     - name: Add validation result as comment
@@ -100,4 +98,3 @@ jobs:
         path: log.md
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
