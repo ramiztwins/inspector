@@ -14,7 +14,7 @@
   ],
   "targets": [
     {
-      "id": "gh",
+      "id": "changedGJ",
       "name": "Github's pricing page",
       "probers": [
         {
@@ -37,7 +37,7 @@
       ]
     },
     {
-      "id": "sumdnotes",
+      "id": "sumdnotesHacked=)",
       "name": "Sumnotes",
       "probers": [
         {
