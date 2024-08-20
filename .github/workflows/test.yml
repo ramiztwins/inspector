@@ -1,0 +1,99 @@
+name: Validate Config
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  validate-config:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Prepare log file
+      run: echo "" > log.md
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.23.0'
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+        
+    - name: Generate JSON schema
+      run: |
+        echo "🚀 **Running Go code to generate schema.json...**"
+        if go run schema/schema.go; then
+          echo "✅ **JSON schema generated successfully.**"
+        else
+          echo "❌ **Failed to generate JSON schema.**"
+          exit 1
+        fi
+
+    - name: Install check-jsonschema
+      run: |
+        echo "📦 **Installing check-jsonschema...**"
+        pip install check-jsonschema
+        echo -e "\n" >> log.md
+
+    - name: Validate config.prod.json
+      run: |
+        echo "🔍 **Validating config.prod.json against schema...**" >> log.md
+        if check-jsonschema --schemafile=schema.json config.prod.json >> log.md 2>&1; then
+          echo "###  Config validation result - Success ✅" > log.md
+        else
+          sed -i '1i### Config Validation result - Failed ❌' log.md
+          exit 1
+        fi
+
+    - name: Check if only targets are modified
+      run: |
+        echo "🔍 **Checking that only 'targets' are modified...**" >> log.md
+        if git diff main...HEAD --name-only | grep -q "config.prod.json"; then
+          if git diff main...HEAD config.prod.json | grep -q '"targets"'; then
+            if ! git diff main...HEAD config.prod.json | grep -qv '"targets"'; then
+              echo "✅ **Only 'targets' are modified.**" >> log.md
+            else
+              echo "❌ **Non-target fields are modified in config.prod.json.**" >> log.md
+              exit 1
+            fi
+          else
+            echo "❌ **No changes to 'targets' found, but config.prod.json is modified.**" >> log.md
+            exit 1
+          fi
+        else
+          echo "✅ **No changes to config.prod.json.**" >> log.md
+        fi
+
+    - name: Log modified target IDs
+      run: |
+        echo "🔍 **Extracting modified target IDs...**" >> log.md
+        modified_ids=$(git diff main...HEAD config.prod.json | grep '"id"' | awk -F: '{print $2}' | sed 's/[",]//g' | tr -d ' ' | tr '\n' ',' | sed 's/,$//')
+        if [ -n "$modified_ids" ]; then
+          echo "Modified Target IDs: $modified_ids" >> log.md
+        else
+          echo "No Target IDs were modified." >> log.md
+        fi
+
+    - name: Add validation result as comment
+      if: always()
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        header: "### Config Validation Result"
+        recreate: true
+        path: log.md
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
