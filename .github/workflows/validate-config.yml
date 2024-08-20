@@ -58,12 +58,16 @@ jobs:
           exit 1
         fi
 
+    - name: Fetch base branch
+      run: |
+        git fetch origin main:refs/remotes/origin/main
+
     - name: Check if only targets are modified
       run: |
         echo "🔍 **Checking that only 'targets' are modified...**" >> log.md
-        if git diff main...HEAD --name-only | grep -q "config.prod.json"; then
-          if git diff main...HEAD config.prod.json | grep -q '"targets"'; then
-            if ! git diff main...HEAD config.prod.json | grep -qv '"targets"'; then
+        if git diff origin/main...HEAD --name-only | grep -q "config.prod.json"; then
+          if git diff origin/main...HEAD config.prod.json | grep -q '"targets"'; then
+            if ! git diff origin/main...HEAD config.prod.json | grep -qv '"targets"'; then
               echo "✅ **Only 'targets' are modified.**" >> log.md
             else
               echo "❌ **Non-target fields are modified in config.prod.json.**" >> log.md
@@ -80,7 +84,7 @@ jobs:
     - name: Log modified target IDs
       run: |
         echo "🔍 **Extracting modified target IDs...**" >> log.md
-        modified_ids=$(git diff main...HEAD config.prod.json | grep '"id"' | awk -F: '{print $2}' | sed 's/[",]//g' | tr -d ' ' | tr '\n' ',' | sed 's/,$//')
+        modified_ids=$(git diff origin/main...HEAD config.prod.json | grep '"id"' | awk -F: '{print $2}' | sed 's/[",]//g' | tr -d ' ' | tr '\n' ',' | sed 's/,$//')
         if [ -n "$modified_ids" ]; then
           echo "Modified Target IDs: $modified_ids" >> log.md
         else
