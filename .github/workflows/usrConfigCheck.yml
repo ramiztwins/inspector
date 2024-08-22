@@ -1,0 +1,46 @@
+name: Check changes at config content level
+
+on:
+  workflow_call:
+    inputs: {}
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  check-config:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+
+    - name: Install dependencies
+      run: npm install deep-diff
+
+    - name: Set environment variables
+      run: |
+        echo "config=config.prod.json" >> $GITHUB_ENV
+        echo "checker=.github/workflows/usrConfigCheck.js" >> $GITHUB_ENV
+
+    - name: Check config content
+      run: |
+        git fetch origin main:main
+        git diff main -- ${{ env.config }} > diff_output.txt
+        node ${{ env.checker }} ${{ env.config }}
+
+    - name: Add check result as comment
+      if: always()
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        header: "Check Config Access"
+        recreate: true
+        path: log.md
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

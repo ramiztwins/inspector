@@ -1,0 +1,61 @@
+name: Check user Schema
+
+on:
+  workflow_call:
+    inputs: {}
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  validate-json:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.23.0'
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+
+    - name: Install JSON Schema Validator  
+      run: npm install ajv@latest ajv-formats
+
+    - name: Initialize log file  
+      run: echo "" > log.md
+
+    - name: Set environment variables
+      run: |
+        echo "schema=schema.json" >> $GITHUB_ENV
+        echo "config=config.prod.json" >> $GITHUB_ENV
+        echo "schema_generator=schema/schema.go" >> $GITHUB_ENV
+        echo "checker=.github/workflows/usrSchemaCheck.js" >> $GITHUB_ENV
+
+    - name: Generate JSON schema 
+      run: |
+        if ! go run ${{ env.schema_generator }}; then
+          echo "## ERROR: Failed to generate JSON schema ❌" >> log.md
+          exit 1
+        fi
+
+    - name: Check Config Schema  
+      run: node ${{ env.checker }} ${{ env.schema }} ${{ env.config }}
+
+    - name: Post result as comment 
+      if: always()
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        header: "Validate User Config Schema"
+        recreate: true
+        path: log.md
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

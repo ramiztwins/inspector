@@ -1,0 +1,35 @@
+name: Pull Request Coordinator
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-user:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check initiator
+        # Developers workflows.
+        if: github.actor == 'suletm' || github.actor == 'admin2'
+        run: echo "Hello world"
+  
+  # User workflows.
+  usrFileCheck:
+    needs: check-user
+    if: github.actor != 'suletm' && github.actor != 'admin2'
+    uses: ./.github/workflows/usrFileCheck.yml
+  
+  usrSchemaCheck:
+    needs: check-user
+    if: github.actor != 'suletm' && github.actor != 'admin2'
+    uses: ./.github/workflows/usrSchemaCheck.yml
+
+  usrConfigCheck:
+    needs: check-user
+    if: github.actor != 'suletm' && github.actor != 'admin2'
+    uses: ./.github/workflows/usrConfigCheck.yml
