@@ -4,7 +4,7 @@ import (
         "encoding/json"
         "fmt"
         "github.com/invopop/jsonschema"
-        "rofl/config"
+        "inspector/config"
         "os"
 )
 
