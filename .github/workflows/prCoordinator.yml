@@ -25,11 +25,11 @@ jobs:
     uses: ./.github/workflows/usrFileCheck.yml
   
   usrSchemaCheck:
-    needs: check-user
-    if: github.actor != 'suletm' && github.actor != 'admin2'
+    needs: [check-user, usrFileCheck]
+    if: github.actor != 'suletm' && github.actor != 'admin2' && always()
     uses: ./.github/workflows/usrSchemaCheck.yml
-
+  
   usrConfigCheck:
-    needs: check-user
-    if: github.actor != 'suletm' && github.actor != 'admin2'
+    needs: [check-user, usrFileCheck]
+    if: github.actor != 'suletm' && github.actor != 'admin2' && always()
     uses: ./.github/workflows/usrConfigCheck.yml
