@@ -28,7 +28,7 @@
               "param2": "bar"
             },
             "cookies": {
-              "name": "myname"
+              "name": "changed"
             },
             "allow_redirects": false,
             "timeout": "6s"
