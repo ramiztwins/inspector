@@ -9,14 +9,19 @@ on:
     branches:
       - main
 
+# The workflow starts with 'check-user' to verify the PR initiator so that we know which scenario to run.
+# If the initiator is not 'suletm' or 'ramiztwins' (i.e., not one of our developers), it proceeds to 'usrFileCheck'.
+# If 'usrFileCheck' succeeds, we identify the initiator as a user-customer (because only 'config.prod.json' was changed).
+# If files other than 'config.prod.json' were changed, we identify the initiator as a user-developer.
+# After 'usrFileCheck', it runs 'usrSchemaCheck'. Finally, after 'usrSchemaCheck', it runs 'usrConfigCheck'.
 jobs:
   check-user:
     runs-on: ubuntu-latest
     steps:
       - name: Check initiator
-        # Developers workflows.
+        # Developers' workflow.
         if: github.actor == 'suletm' || github.actor == 'admin2'
-        run: echo "Hello world"
+        run: echo "Hi devs"
   
   # User workflows.
   usrFileCheck:
