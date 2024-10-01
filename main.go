@@ -7,6 +7,7 @@ import (
 	"inspector/metrics"
 	"inspector/mylogger"
 	"inspector/probers"
+	"inspector/watcher"
 	"io"
 	"math/rand"
 	"os"
@@ -56,6 +57,16 @@ func main() {
 	}
 	mylogger.MainLogger.Infof("Initialized metrics database...")
 
+	// Tracking the config to be able to inform the inspector about changes, this makes the inspector self-updating while running.
+	configEventChannel := make(chan string)
+	go func() {
+        err := watcher.WatchFile(*configPath, configEventChannel)
+        if err != nil {
+            mylogger.MainLogger.Errorf("Error watching file: %s", err)
+            return
+        }
+    }() 
+
 	// TODO: determine what should the size of the channel be ?
 	metricsChannel := make(chan metrics.SingleMetric, METRIC_CHANNEL_SIZE)
 
@@ -88,6 +99,26 @@ func main() {
 	 *       if the number of targets become extremely large, but for now it's not a priority.
 	 */
 	for {
+		// Monitor configEventChannel to know about config changes. For current state of Inspector we interested only in "Write" event.
+		select {
+		case event := <-configEventChannel:
+			mylogger.MainLogger.Infof("Config event: %s", event)
+			c, err = config.NewConfig(*configPath)
+			if err != nil {
+				mylogger.MainLogger.Infof("Error reading config: %s", err)
+				os.Exit(1)
+			}
+			mylogger.MainLogger.Infof("Config parsed: %v", c.TimeSeriesDB[0])
+			mdb, err = metrics.NewMetricsDB(c.TimeSeriesDB[0])
+			if err != nil {
+				mylogger.MainLogger.Infof("Failed initializing metrics db client with error: %s", err)
+				os.Exit(1)
+			}
+			mylogger.MainLogger.Infof("Initialized metrics database...")
+		default:
+			mylogger.MainLogger.Infof("No config event.")
+		}
+
 		for _, target := range c.Targets {
 			for _, proberSubConfig := range target.Probers {
 				go func() {
