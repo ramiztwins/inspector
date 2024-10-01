@@ -1,94 +1,94 @@
 {
-  "inspector": {
-    "region": "west-coast"
-  },
-  "metrics_db": [
-    {
-      "influxdb": {
-        "database_url": "inspector-influxdb",
-        "port": 8086,
-        "database_name": "inspector-influxdb",
-        "transport_protocol": "http"
+    "inspector": {
+      "region": "west-coast"
+    },
+    "metrics_db": [
+      {
+        "influxdb": {
+          "database_url": "inspector-influxdb",
+          "port": 8086,
+          "database_name": "inspector",
+          "transport_protocol": "http"
+        }
       }
-    }
-  ],
-  "targets": [
-    {
-      "id": "github",
-      "name": "Github's pricing page",
-      "probers": [
-        {
-          "id": "GH",
-          "name": "basic_http_prober",
-          "context": {
-            "url": "https://github.com/pricing",
-            "method": "GET",
-            "parameters": {
-              "param1": "foo",
-              "param2": "bar"
-            },
-            "cookies": {
-              "name": "myname"
-            },
-            "allow_redirects": false,
-            "timeout": "6s"
+    ],
+    "targets": [
+      {
+        "id": "github",
+        "name": "Github's pricing page",
+        "probers": [
+          {
+            "id": "GH",
+            "name": "basic_http_prober",
+            "context": {
+              "url": "https://github.com/pricing",
+              "method": "GET",
+              "parameters": {
+                "param1": "foo",
+                "param2": "bar"
+              },
+              "cookies": {
+                "name": "myname"
+              },
+              "allow_redirects": false,
+              "timeout": "6s"
+            }
           }
-        }
-      ]
-    },
-    {
-      "id": "sumnotes",
-      "name": "Sumnotes",
-      "probers": [
-        {
-          "id": "Sumnotes",
-          "name": "basic_http_prober",
-          "context": {
-            "url": "https://sumnotes.net",
-            "method": "GET",
-            "parameters": {},
-            "cookies": {},
-            "allow_redirects": false,
-            "timeout": "12s"
+        ]
+      },
+      {
+        "id": "sumnotes",
+        "name": "Sumnotes",
+        "probers": [
+          {
+            "id": "Sumnotes",
+            "name": "basic_http_prober",
+            "context": {
+              "url": "https://sumnotes.net",
+              "method": "GET",
+              "parameters": {},
+              "cookies": {},
+              "allow_redirects": false,
+              "timeout": "12s"
+            }
           }
-        }
-      ]
-    },
-    {
-      "id": "google",
-      "name": "Google's home page",
-      "probers": [
-        {
-          "id": "Google",
-          "name": "basic_http_prober",
-          "context": {
-            "url": "https://www.google.com",
-            "method": "GET",
-            "parameters": {},
-            "cookies": {},
-            "allow_redirects": true,
-            "timeout": "5s"
+        ]
+      },
+      {
+        "id": "google",
+        "name": "Google's home page",
+        "probers": [
+          {
+            "id": "Google",
+            "name": "basic_http_prober",
+            "context": {
+              "url": "https://www.google.com",
+              "method": "GET",
+              "parameters": {},
+              "cookies": {},
+              "allow_redirects": true,
+              "timeout": "5s"
+            }
           }
-        }
-      ]
-    },
-    {
-      "id": "amazon",
-      "name": "Amazon",
-      "probers": [
-        {
-          "id": "Amazon",
-          "name": "basic_http_prober",
-          "context": {
-            "url": "https://www.amazon.com",
-            "method": "GET",
-            "parameters": {},
-            "cookies": {},
-            "allow_redirects": true,
-            "timeout": "6s"
+        ]
+      },
+      {
+        "id": "amazon",
+        "name": "Amazon",
+        "probers": [
+          {
+            "id": "Amazon",
+            "name": "basic_http_prober",
+            "context": {
+              "url": "https://www.amazon.com",
+              "method": "GET",
+              "parameters": {},
+              "cookies": {},
+              "allow_redirects": true,
+              "timeout": "6s"
+            }
           }
-        }
-      ]
-    }
-  ]
-}
+        ]
+      }
+    ]
+  }
