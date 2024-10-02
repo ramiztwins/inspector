@@ -128,3 +128,42 @@ func (flxDB *InfluxDB) EmitMultiple() {
 	// Clear the accumulated metrics after successful sending
 	flxDB.metrics = flxDB.metrics[:0]
 }
+
+// LaunchMetricsAggregation sets up retention policies and continuous queries in InfluxDB.
+func (flxDB *InfluxDB) LaunchMetricsAggregation() error {
+	statusMeasurement := "status"
+	certificateMeasurement := "certificate_expiration"
+	latencyMeasurements := []string{"connect_time", "response_time"}
+
+	// Collect all queries to execute.
+	queries := []string{
+		CreateRetentionPolicyQuery(flxDB.database),
+	}
+	for _, measurement := range latencyMeasurements {
+		queries = append(queries, LatencyQueries(flxDB.database, measurement)...)
+	}
+	queries = append(queries, StatusQueries(flxDB.database, statusMeasurement)...)
+	queries = append(queries, CertificateExpirationQueries(flxDB.database, certificateMeasurement)...)
+
+	// Execute all queries.
+	for _, cmd := range queries {
+		q := influxdb_client.Query{
+			Command:  cmd,
+			Database: flxDB.database,
+		}
+		response, err := flxDB.client.Query(q)
+		if err != nil {
+			return fmt.Errorf("error executing query '%s': %w", cmd, err)
+		}
+		if response.Error() != nil {
+			return fmt.Errorf("query response error for query '%s': %w", cmd, response.Error())
+		}
+		// Error checking.
+		for _, result := range response.Results {
+			if result.Err != "" {
+				return fmt.Errorf("query result error for query '%s': %s", cmd, result.Err)
+			}
+		}
+	}
+	return nil
+}

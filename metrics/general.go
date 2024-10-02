@@ -18,6 +18,7 @@ type MetricsDB interface {
 	EmitSingle(m SingleMetric)
 	CollectMetrics(m SingleMetric)
 	EmitMultiple()
+	LaunchMetricsAggregation() error
 }
 
 func CreateSingleMetric(name string, value int64, additionalFields map[string]interface{}, tags map[string]string) SingleMetric {

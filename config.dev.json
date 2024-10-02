@@ -6,8 +6,9 @@
     {
       "influxdb": {
         "database_url": "inspector-influxdb",
+        "version": "1.8",
         "port": 8086,
-        "database_name": "inspector-influxdb",
+        "database_name": "inspector",
         "transport_protocol": "http"
       }
     }
