@@ -18,7 +18,12 @@ type MetricsDB interface {
 	EmitSingle(m SingleMetric)
 	CollectMetrics(m SingleMetric)
 	EmitMultiple()
-	LaunchMetricsAggregation() error
+	/*
+	* Of all the possible implementations of creating continuous queries i chose to add a method to the general interface for working with the databases.
+	* The reason i thought this decision was right is the idea that we will always rely on something that aggregates data in our database. Let's say if we will 
+	* upgrade to new version of Influx we will have to change this method to use 'tasks', not 'continious queries'. open to suggestions ;)
+	*/
+	LaunchMetricsAggregation() error	
 }
 
 func CreateSingleMetric(name string, value int64, additionalFields map[string]interface{}, tags map[string]string) SingleMetric {
