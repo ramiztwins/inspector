@@ -13,6 +13,7 @@ import (
 
 type InfluxDBSubConfig struct {
 	DatabaseURL  string `json:"database_url"`
+	Version 	 string `json:"version"`
 	Port         int    `json:"port"`
 	DatabaseName string `json:"database_name"`
 	Protocol     string `json:"transport_protocol"`
