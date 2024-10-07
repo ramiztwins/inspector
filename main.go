@@ -7,6 +7,7 @@ import (
 	"inspector/metrics"
 	"inspector/mylogger"
 	"inspector/probers"
+	"inspector/scheduler"
 	"io"
 	"math/rand"
 	"os"
@@ -75,6 +76,25 @@ func main() {
 				mylogger.MainLogger.Infof("Metrics channel is empty. Emitting metrics...")
 				mdb.EmitMultiple()
 			}
+		}
+	}()
+	
+	/*
+	* This is a scheduler configuration that will execute tasks at a specified time,
+	* Multiple schedulers can be created for different tasks with varying time schedules.
+	*/
+	schedule := scheduler.ScheduleOptions{
+		TimeZone: "Europe/Istanbul",
+		Schedule: "daily",   
+		Time:     "09:46",
+	}
+	go func() {
+		err := scheduler.ScheduleTask(schedule, func() {
+			mylogger.MainLogger.Infof("Scheduled task executed. Scheduled Time: %s %s", schedule.Time, schedule.TimeZone)
+			// do something like notifications or aggregated data collecting
+		})
+		if err != nil {
+			mylogger.MainLogger.Errorf("Scheduling error: %s", err)
 		}
 	}()
 
