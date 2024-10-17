@@ -1,94 +1,338 @@
 {
     "inspector": {
-      "region": "west-coast"
+        "region": "west-coast"
     },
     "metrics_db": [
-      {
-        "influxdb": {
-          "database_url": "inspector-influxdb",
-          "port": 8086,
-          "database_name": "inspector",
-          "transport_protocol": "http"
+        {
+            "influxdb": {
+                "database_url": "inspector-influxdb",
+                "port": 8086,
+                "database_name": "inspector",
+                "transport_protocol": "http"
+            }
         }
-      }
     ],
     "targets": [
-      {
-        "id": "github",
-        "name": "Github's pricing page",
-        "probers": [
-          {
-            "id": "GH",
-            "name": "basic_http_prober",
-            "context": {
-              "url": "https://github.com/pricing",
-              "method": "GET",
-              "parameters": {
-                "param1": "foo",
-                "param2": "bar"
-              },
-              "cookies": {
-                "name": "myname"
-              },
-              "allow_redirects": false,
-              "timeout": "6s"
-            }
-          }
-        ]
-      },
-      {
-        "id": "sumnotes",
-        "name": "Sumnotes",
-        "probers": [
-          {
-            "id": "Sumnotes",
-            "name": "basic_http_prober",
-            "context": {
-              "url": "https://sumnotes.net",
-              "method": "GET",
-              "parameters": {},
-              "cookies": {},
-              "allow_redirects": false,
-              "timeout": "12s"
-            }
-          }
-        ]
-      },
-      {
-        "id": "google",
-        "name": "Google's home page",
-        "probers": [
-          {
-            "id": "Google",
-            "name": "basic_http_prober",
-            "context": {
-              "url": "https://www.google.com",
-              "method": "GET",
-              "parameters": {},
-              "cookies": {},
-              "allow_redirects": true,
-              "timeout": "5s"
-            }
-          }
-        ]
-      },
-      {
-        "id": "amazon",
-        "name": "Amazon",
-        "probers": [
-          {
-            "id": "Amazon",
-            "name": "basic_http_prober",
-            "context": {
-              "url": "https://www.amazon.com",
-              "method": "GET",
-              "parameters": {},
-              "cookies": {},
-              "allow_redirects": true,
-              "timeout": "6s"
-            }
-          }
-        ]
-      }
+        {
+            "id": "github",
+            "name": "Github's pricing page",
+            "notifications": [
+                {
+                    "type": "email",
+                    "email": {
+                        "address": "github-alerts@yourdomain.com",
+                        "subject": "GitHub Pricing Page Alert"
+                    }
+                }
+            ],
+            "probers": [
+                {
+                    "id": "about",
+                    "name": "basic_http_prober",
+                    "context": {
+                        "url": "https://github.com/about",
+                        "method": "GET",
+                        "parameters": {},
+                        "cookies": {},
+                        "allow_redirects": true,
+                        "timeout": "6s"
+                    }
+                },
+                {
+                    "id": "help",
+                    "name": "basic_http_prober",
+                    "context": {
+                        "url": "https://github.com/help",
+                        "method": "GET",
+                        "parameters": {},
+                        "cookies": {},
+                        "allow_redirects": true,
+                        "timeout": "6s"
+                    }
+                },
+                {
+                    "id": "user",
+                    "name": "basic_http_prober",
+                    "context": {
+                        "url": "https://github.com/myuser",
+                        "method": "GET",
+                        "parameters": {},
+                        "cookies": {},
+                        "allow_redirects": true,
+                        "timeout": "6s"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "sumnotes",
+            "name": "Sumnotes",
+            "notifications": [
+                {
+                    "type": "email",
+                    "email": {
+                        "address": "sumnotes-alerts@yourdomain.com",
+                        "subject": "Sumnotes Alert"
+                    }
+                }
+            ],
+            "probers": [
+                {
+                    "id": "home",
+                    "name": "basic_http_prober",
+                    "context": {
+                        "url": "https://sumnotes.net",
+                        "method": "GET",
+                        "parameters": {},
+                        "cookies": {},
+                        "allow_redirects": true,
+                        "timeout": "12s"
+                    }
+                },
+                {
+                    "id": "features",
+                    "name": "basic_http_prober",
+                    "context": {
+                        "url": "https://sumnotes.net/features",
+                        "method": "GET",
+                        "parameters": {},
+                        "cookies": {},
+                        "allow_redirects": true,
+                        "timeout": "12s"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "google",
+            "name": "Google's home page",
+            "notifications": [
+                {
+                    "type": "email",
+                    "email": {
+                        "address": "google-alerts@yourdomain.com",
+                        "subject": "Google Home Page Alert"
+                    }
+                }
+            ],
+            "probers": [
+                {
+                    "id": "home",
+                    "name": "basic_http_prober",
+                    "context": {
+                        "url": "https://www.google.com",
+                        "method": "GET",
+                        "parameters": {},
+                        "cookies": {},
+                        "allow_redirects": true,
+                        "timeout": "5s"
+                    }
+                },
+                {
+                    "id": "maps",
+                    "name": "basic_http_prober",
+                    "context": {
+                        "url": "https://maps.google.com",
+                        "method": "GET",
+                        "parameters": {},
+                        "cookies": {},
+                        "allow_redirects": true,
+                        "timeout": "5s"
+                    }
+                },
+                {
+                    "id": "search",
+                    "name": "basic_http_prober",
+                    "context": {
+                        "url": "https://www.google.com/search",
+                        "method": "GET",
+                        "parameters": {},
+                        "cookies": {},
+                        "allow_redirects": true,
+                        "timeout": "5s"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "amazon",
+            "name": "Amazon",
+            "notifications": [
+                {
+                    "type": "email",
+                    "email": {
+                        "address": "amazon-alerts@yourdomain.com",
+                        "subject": "Amazon Alert"
+                    }
+                }
+            ],
+            "probers": [
+                {
+                    "id": "home",
+                    "name": "basic_http_prober",
+                    "context": {
+                        "url": "https://www.amazon.com",
+                        "method": "GET",
+                        "parameters": {},
+                        "cookies": {},
+                        "allow_redirects": true,
+                        "timeout": "6s"
+                    }
+                },
+                {
+                    "id": "deals",
+                    "name": "basic_http_prober",
+                    "context": {
+                        "url": "https://www.amazon.com/gp/goldbox",
+                        "method": "GET",
+                        "parameters": {},
+                        "cookies": {},
+                        "allow_redirects": true,
+                        "timeout": "6s"
+                    }
+                },
+                {
+                    "id": "login",
+                    "name": "basic_http_prober",
+                    "context": {
+                        "url": "https://www.amazon.com/ap/signin",
+                        "method": "GET",
+                        "parameters": {},
+                        "cookies": {},
+                        "allow_redirects": true,
+                        "timeout": "6s"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "stackoverflow",
+            "name": "Stack Overflow",
+            "notifications": [
+                {
+                    "type": "email",
+                    "email": {
+                        "address": "stackoverflow-alerts@yourdomain.com",
+                        "subject": "Stack Overflow Alert"
+                    }
+                }
+            ],
+            "probers": [
+                {
+                    "id": "home",
+                    "name": "basic_http_prober",
+                    "context": {
+                        "url": "https://stackoverflow.com",
+                        "method": "GET",
+                        "parameters": {},
+                        "cookies": {},
+                        "allow_redirects": true,
+                        "timeout": "5s"
+                    }
+                },
+                {
+                    "id": "jobs",
+                    "name": "basic_http_prober",
+                    "context": {
+                        "url": "https://stackoverflow.com/jobs",
+                        "method": "GET",
+                        "parameters": {},
+                        "cookies": {},
+                        "allow_redirects": true,
+                        "timeout": "5s"
+                    }
+                },
+                {
+                    "id": "tags",
+                    "name": "basic_http_prober",
+                    "context": {
+                        "url": "https://stackoverflow.com/tags",
+                        "method": "GET",
+                        "parameters": {},
+                        "cookies": {},
+                        "allow_redirects": true,
+                        "timeout": "5s"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "reddit",
+            "name": "Reddit",
+            "notifications": [
+                {
+                    "type": "email",
+                    "email": {
+                        "address": "reddit-alerts@yourdomain.com",
+                        "subject": "Reddit Alert"
+                    }
+                }
+            ],
+            "probers": [
+                {
+                    "id": "home",
+                    "name": "basic_http_prober",
+                    "context": {
+                        "url": "https://www.reddit.com",
+                        "method": "GET",
+                        "parameters": {},
+                        "cookies": {},
+                        "allow_redirects": true,
+                        "timeout": "5s"
+                    }
+                },
+                {
+                    "id": "subreddits",
+                    "name": "basic_http_prober",
+                    "context": {
+                        "url": "https://www.reddit.com/subreddits",
+                        "method": "GET",
+                        "parameters": {},
+                        "cookies": {},
+                        "allow_redirects": true,
+                        "timeout": "5s"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "twitter",
+            "name": "Twitter",
+            "notifications": [
+                {
+                    "type": "email",
+                    "email": {
+                        "address": "twitter-alerts@yourdomain.com",
+                        "subject": "Twitter Alert"
+                    }
+                }
+            ],
+            "probers": [
+                {
+                    "id": "home",
+                    "name": "basic_http_prober",
+                    "context": {
+                        "url": "https://www.twitter.com",
+                        "method": "GET",
+                        "parameters": {},
+                        "cookies": {},
+                        "allow_redirects": true,
+                        "timeout": "5s"
+                    }
+                },
+                {
+                    "id": "login",
+                    "name": "basic_http_prober",
+                    "context": {
+                        "url": "https://www.twitter.com/login",
+                        "method": "GET",
+                        "parameters": {},
+                        "cookies": {},
+                        "allow_redirects": true,
+                        "timeout": "5s"
+                    }
+                }
+            ]
+        }
     ]
-  }
+}
