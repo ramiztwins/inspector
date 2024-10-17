@@ -51,7 +51,7 @@ type ProberSubConfig struct {
 }
 
 type EmailConfig struct {
-	// Address will stored in Github in encrypted way.
+	// Address will be stored in Github in encrypted way.
     Address string `json:"address"`
     Subject string `json:"subject"`
 }
