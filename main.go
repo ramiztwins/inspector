@@ -57,6 +57,13 @@ func main() {
 	}
 	mylogger.MainLogger.Infof("Initialized metrics database...")
 
+  // Launch Continious Queries.
+	err = mdb.LaunchMetricsAggregation()
+	if err != nil {
+		mylogger.MainLogger.Infof("Failed to launch metrics aggregation: %v", err)
+		os.Exit(1)
+	}
+  
 	// Tracking the config to be able to inform the inspector about changes, this makes the inspector self-updating while running.
 	configEventChannel := make(chan string)
 	go func() {
@@ -69,7 +76,6 @@ func main() {
 
 	// TODO: determine what should the size of the channel be ?
 	metricsChannel := make(chan metrics.SingleMetric, METRIC_CHANNEL_SIZE)
-
 	/*
 	 * Kick off an async  metrics collection from the metrics channel. Metrics are pushed into the metrics channel
 	 * by probers. Collected metrics are pushed out to the currently configured metrics database.
