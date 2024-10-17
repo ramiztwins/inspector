@@ -50,12 +50,28 @@ type ProberSubConfig struct {
 	Context ProberContextSubConfig `json:"context"`
 }
 
+type EmailConfig struct {
+	// Address will stored in Github in encrypted way.
+    Address string `json:"address"`
+    Subject string `json:"subject"`
+}
+
+// Each Target has it's own list of methods for notifying the user.
+type NotificationConfig struct {
+    Type   string      `json:"type"`
+	Email *EmailConfig `json:"email,omitempty"`
+    // Discord *DiscordConfig `json:"discord,omitempty"`
+	// Slack *SlackConfig `json:"slack,omitempty"`
+}
+
 // TargetSubConfig is a logical grouping of probers belonging to same entity.
 type TargetSubConfig struct {
 	// Freeform identifier of the current target.
 	Id string `json:"id"`
 	// Freeform name of the current target.
 	Name string `json:"name"`
+	// List of notification types for each Target.
+	Notifications []NotificationConfig `json:"notifications"`
 	// List of probers that live under this target.
 	Probers []ProberSubConfig `json:"probers"`
 }
