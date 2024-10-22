@@ -18,8 +18,11 @@
             "name": "Github's pricing page",
             "notifications": [
                 {
-                    "type": "email",
-                    "email": {
+                    "email1": {
+                        "address": "github-alerts@yourdomain.com",
+                        "subject": "GitHub Pricing Page Alert"
+                    },
+                    "email2": {
                         "address": "github-alerts@yourdomain.com",
                         "subject": "GitHub Pricing Page Alert"
                     }
@@ -69,7 +72,6 @@
             "name": "Sumnotes",
             "notifications": [
                 {
-                    "type": "email",
                     "email": {
                         "address": "sumnotes-alerts@yourdomain.com",
                         "subject": "Sumnotes Alert"
@@ -108,7 +110,6 @@
             "name": "Google's home page",
             "notifications": [
                 {
-                    "type": "email",
                     "email": {
                         "address": "google-alerts@yourdomain.com",
                         "subject": "Google Home Page Alert"
@@ -159,7 +160,6 @@
             "name": "Amazon",
             "notifications": [
                 {
-                    "type": "email",
                     "email": {
                         "address": "amazon-alerts@yourdomain.com",
                         "subject": "Amazon Alert"
@@ -210,7 +210,6 @@
             "name": "Stack Overflow",
             "notifications": [
                 {
-                    "type": "email",
                     "email": {
                         "address": "stackoverflow-alerts@yourdomain.com",
                         "subject": "Stack Overflow Alert"
@@ -261,7 +260,6 @@
             "name": "Reddit",
             "notifications": [
                 {
-                    "type": "email",
                     "email": {
                         "address": "reddit-alerts@yourdomain.com",
                         "subject": "Reddit Alert"
@@ -300,7 +298,6 @@
             "name": "Twitter",
             "notifications": [
                 {
-                    "type": "email",
                     "email": {
                         "address": "twitter-alerts@yourdomain.com",
                         "subject": "Twitter Alert"

@@ -58,7 +58,6 @@ type EmailConfig struct {
 
 // Each Target has it's own list of methods for notifying the user.
 type NotificationConfig struct {
-    Type   string      `json:"type"`
 	Email *EmailConfig `json:"email,omitempty"`
     // Discord *DiscordConfig `json:"discord,omitempty"`
 	// Slack *SlackConfig `json:"slack,omitempty"`
