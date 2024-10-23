@@ -18,16 +18,18 @@
             "name": "Github's pricing page",
             "notifications": [
                 {
-                    "email1": {
-                        "address": "github-alerts@yourdomain.com",
+                    "email": {
+                        "address": "github-alerts1@yourdomain.com",
                         "subject": "GitHub Pricing Page Alert"
-                    },
-                    "email2": {
-                        "address": "github-alerts@yourdomain.com",
+                    }
+                },
+                {
+                    "email": {
+                        "address": "github-alerts2@yourdomain.com",
                         "subject": "GitHub Pricing Page Alert"
                     }
                 }
-            ],
+            ],            
             "probers": [
                 {
                     "id": "about",
