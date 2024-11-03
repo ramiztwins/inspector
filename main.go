@@ -59,6 +59,11 @@ func main() {
 		mylogger.MainLogger.Infof("Failed initializing metrics db client with error: %s", err)
 		os.Exit(1)
 	}
+	err = mdb.LaunchAggregation()
+	if err != nil {
+		mylogger.MainLogger.Infof("Failed initializing metrics db data aggregation error: %s", err)
+		os.Exit(1)
+	}
 	mylogger.MainLogger.Infof("Initialized metrics database...")
 
 	// Tracking the config to be able to inform the inspector about changes, this makes the inspector self-updating while running.

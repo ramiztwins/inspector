@@ -18,6 +18,7 @@ type MetricsDB interface {
 	EmitSingle(m SingleMetric)
 	CollectMetrics(m SingleMetric)
 	EmitMultiple()
+	LaunchAggregation() error
 }
 
 func CreateSingleMetric(name string, value int64, additionalFields map[string]interface{}, tags map[string]string) SingleMetric {
@@ -29,8 +30,8 @@ func CreateSingleMetric(name string, value int64, additionalFields map[string]in
 	}
 }
 
-// NewMetricsDB initializes a metrics database specified by the config. It returns an object that implements the MetricsDB
-// interface. Currently only InfluxDB is supported.
+// NewMetricsDB initializes a metrics database specified by the config.
+// Currently, only InfluxDB is supported.
 func NewMetricsDB(c config.MetricsDBSubConfig) (MetricsDB, error) {
 	var mdb MetricsDB
 	if c.InfluxDBSubConfig != nil {
@@ -41,7 +42,7 @@ func NewMetricsDB(c config.MetricsDBSubConfig) (MetricsDB, error) {
 		}
 	} else {
 		mylogger.MainLogger.Errorf("Specified metrics database is not supported in config: %v", c)
-		return nil, fmt.Errorf("MetricsDB defiend in configuration is not supported: %v", c)
+		return nil, fmt.Errorf("MetricsDB defined in configuration is not supported: %v", c)
 	}
 	return mdb, nil
 }
