@@ -2,17 +2,21 @@ package main
 
 import (
 	"flag"
-	glogger "github.com/google/logger"
-	"inspector/config"
-	"inspector/metrics"
-	"inspector/mylogger"
-	"inspector/probers"
-	"inspector/watcher"
 	"io"
 	"math/rand"
 	"os"
 	"time"
+
+	glogger "github.com/google/logger"
+
+	"inspector/config"
+	"inspector/metrics"
+	"inspector/mylogger"
+	"inspector/probers"
+	"inspector/scheduler"
+	"inspector/watcher"
 )
+
 
 var METRIC_CHANNEL_POLL_INTERVAL = 10 * time.Second
 var TARGET_LIST_SCAN_WAIT_INTERVAL = 4 * time.Second
@@ -69,6 +73,25 @@ func main() {
 
 	// TODO: determine what should the size of the channel be ?
 	metricsChannel := make(chan metrics.SingleMetric, METRIC_CHANNEL_SIZE)
+
+	/*
+	* This is a scheduler configuration that will execute tasks at a specified time,
+	* Multiple schedulers can be created for different tasks with varying time schedules.
+	*/
+	schedule := scheduler.ScheduleOptions{
+		TimeZone: "Europe/Istanbul",
+		Schedule: "daily",   
+		Time:     "19:03",
+	}
+	go func() {
+		err := scheduler.ScheduleTask(schedule, func() {
+			mylogger.MainLogger.Infof("Scheduled task executed. Scheduled Time: %s %s", schedule.Time, schedule.TimeZone)
+			// do something like notifications or aggregated data collecting
+		})
+		if err != nil {
+			mylogger.MainLogger.Errorf("Scheduling error: %s", err)
+		}
+	}()
 
 	/*
 	 * Kick off an async  metrics collection from the metrics channel. Metrics are pushed into the metrics channel
